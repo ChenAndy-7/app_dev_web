@@ -1,36 +1,41 @@
-import './Navbar.css'
+import './navbar.css'
+import { Link, useMatch, useResolvedPath } from "react-router-dom"
 
 const Navbar = () => {
     return ( 
-      <nav>
-        <div className="left">
-          <a href="/">App Dev</a>
-        </div>
-        <div className="right">
-          <a href="/attendance" target="_blank" rel="noopener 
-          no-referrer">
-            <span>Attendance</span>
-          </a>
-          <a href="/attendance" target="_blank" rel="noopener 
-          no-referrer">
-            <span>Lecture</span>
-          </a>
-          <a href="/attendance" target="_blank" rel="noopener 
-          no-referrer">
-            <span>HW</span>
-          </a>
-          <a href="/attendance" target="_blank" rel="noopener 
-          no-referrer">
-            <span>Slack</span>
-          </a>
-          <a href="/attendance" target="_blank" rel="noopener 
-          no-referrer">
-            <span>Mentor</span>
-          </a>
-        </div>
-  </nav>
+      <nav className="nav">
+      <Link to="/" className="site-title">
+        App Dev
+      </Link>
+      <ul>
+        <CustomLink to="/attendance">Attendance</CustomLink>
+        <CustomLink to="/hw">HW</CustomLink>
+        <CustomLink to="/lecture">Lecture</CustomLink>
+        <CustomLink to="/mentor">Mentor</CustomLink>
+        <CustomLink to="/slack">Slack</CustomLink>
+      </ul>
+    </nav>
     )
   }
+
+  interface CustomLinkProps extends React.ComponentPropsWithoutRef<typeof Link> {
+    to: string;
+    children: React.ReactNode;
+  }
   
+  const CustomLink: React.FC<CustomLinkProps> = ({ to, children, ...props }) => {
+    const resolvedPath = useResolvedPath(to);
+    const isActive = useMatch({ path: resolvedPath.pathname, end: true });
+  
+    return (
+      <li className={isActive ? "active" : ""}>
+        <Link to={to} {...props}>
+          {children}
+        </Link>
+      </li>
+    );
+  };
+  
+
   export default Navbar
   
