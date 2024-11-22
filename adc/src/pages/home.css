@@ -1,0 +1,39 @@
+body {
+    background-color: black;
+}
+
+#title {
+    color: white;
+}
+
+#studentbut {
+    margin-right: 0.625rem; /* 10px */
+    padding: 0.625rem 1.25rem; /* 10px 20px */
+    background-color: #013a5d;
+    color: white;
+    border: none;
+    border-radius: 0.3125rem; /* 5px */
+    cursor: pointer;
+}
+
+#studentbut:hover {
+    transform: scale(1.1); /* Slightly enlarge the button */
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2); /* 4px 8px */
+    background-color: #43b0f3;
+}
+
+#teacherbut {
+    margin-right: 0.625rem; /* 10px */
+    padding: 0.625rem 1.25rem; /* 10px 20px */
+    background-color: #013a5d; /* Fix: differentiate colors */
+    color: white;
+    border: none;
+    border-radius: 0.3125rem; /* 5px */
+    cursor: pointer;
+}
+
+#teacherbut:hover {
+    transform: scale(1.1); /* Slightly enlarge the button */
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2); /* 4px 8px */
+    background-color: #43b0f3;
+}
