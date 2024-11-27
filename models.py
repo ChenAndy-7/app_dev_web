@@ -1,30 +1,40 @@
 from sqlmodel import SQLModel, Field
 
-class Lecture(SQLModel, table=True):
-    id: int = Field(primary_key=True)
+class LectureBase(SQLModel):
     slideName: str
     url: str
 
-class Homework(SQLModel, table=True):
-    id: int = Field(primary_key=True)
+class Lecture(LectureBase, table=True):
+    id: int | None = Field(default=None, primary_key=True) 
+
+class HomeworkBase(SQLModel):
     hwName: str
     url: str
 
-class Slack(SQLModel, table=True):
-    id: int = Field(primary_key=True)
+class Homework(HomeworkBase, table=True):
+    id: int | None = Field(default=None, primary_key=True) 
+
+class SlackBase(SQLModel):
     slackName: str
     url: str
     slackChannel: str
 
-class Attendance(SQLModel, table=True):
-    id: int = Field(primary_key=True)
+class Slack(SlackBase, table=True):
+    id: int | None = Field(default=None, primary_key=True) 
+
+class AttendanceBase(SQLModel):
     studentName: str
     attendance: str
     date: str
 
-class Mentors(SQLModel, table=True):
-    id: int = Field(primary_key=True)
+class Attendance(AttendanceBase, table=True):
+    id: int | None = Field(default=None, primary_key=True) 
+
+class MentorsBase(SQLModel):
     mentorName: str
     mentorEmail: str
     mentorPhone: str
     mentorSlack: str
+
+class Mentors(MentorsBase, table=True):
+    id: int | None = Field(default=None, primary_key=True) 

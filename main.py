@@ -30,11 +30,11 @@ def on_startup():
     create_db_and_tables()
 
 # including the routers to different files
-app.include_router(lecture.router, prefix="/lectures", tags=["Lectures"])
-app.include_router(slack.router, prefix="/slack", tags=["Slack"])
-app.include_router(homework.router, prefix="/homeworks", tags=["Homeworks"])
-app.include_router(attendance.router, prefix="/attendance", tags=["Attendance"])
-app.include_router(mentors.router, prefix="/mentors", tags=["Mentors"])
+app.include_router(lecture.router, tags=["Lectures"])
+app.include_router(slack.router, tags=["Slack"])
+app.include_router(homework.router, tags=["Homeworks"])
+app.include_router(attendance.router, tags=["Attendance"])
+app.include_router(mentors.router, tags=["Mentors"])
 
 # # Add CORS middleware to allow access from any origin
 # app.add_middleware(

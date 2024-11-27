@@ -1,32 +1,30 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from database import get_session
-from models import Homework
+from models import Homework,HomeworkBase
 from typing import List
 
 router = APIRouter()
 
-# here is where you do the fastapi stuff (chatgpt did this so prob has some errors mb):
-# EXAMPLE IS FOR LECTURE.PY SPECIFICALLY SO CHANGE FOR URS + Look at Kimbers stuff for help
+# here is where you do the fastapi stuff:
 
-# @router.get("/")
-# async def get_lectures(session: Session = Depends(get_session)):
-#     query = select(Lecture)
-#     return session.exec(query).all()
+# @router.get("/tweets")
+# async def get_tweets(session: SessionDep):
+#     return session.exec(select(Tweet)).all()
 
-# @router.post("/new", response_model=Lecture)
-# async def create_lecture(lecture: Lecture, session: Session = Depends(get_session)):
-#     session.add(lecture)
+# @router.post("/tweets/new", response_model=Tweet)
+# async def post_tweets(tweet: TweetBase, session: SessionDep):
+#     db_tweet = Tweet.model_validate(tweet)
+#     session.add(db_tweet)
 #     session.commit()
-#     session.refresh(lecture)
-#     return lecture
+#     session.refresh(db_tweet)
+#     return db_tweet
 
-# @router.delete("/{lecture_id}", response_model=dict)
-# def delete_lecture(lecture_id: int, session: Session = Depends(get_session)):
-#     query = select(Lecture).where(Lecture.id == lecture_id)
-#     lecture = session.exec(query).first()
-#     if not lecture:
-#         raise HTTPException(status_code=404, detail="Lecture not found")
-#     session.delete(lecture)
+# @router.delete("/tweets/{tweet_id}")
+# def delete_tweet(tweet_id: int, session: SessionDep):
+#     tweet = session.get(Tweet, tweet_id)
+#     if not tweet:
+#         raise HTTPException(status_code=404, detail="Hero not found")
+#     session.delete(tweet)
 #     session.commit()
 #     return {"ok": True}
