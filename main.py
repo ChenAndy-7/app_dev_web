@@ -7,25 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Annotated
 from contextlib import asynccontextmanager
 from sqlmodel import Field, Session, SQLModel, create_engine
-
-#this is the code for the storing the data and using a database
-
-sqlite_database_name = "data.db"
-sqlite_url = f"sqlite:///{sqlite_database_name}"
-
-connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, connect_args=connect_args, echo=True)
-
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
-    
-# Creating the session, the session communicates with the database
-def get_session():
-    with Session(engine) as session:
-        yield session
-
-
-SessionDep = Annotated[Session, Depends(get_session)]
+from routers import lecture, slack, homework, attendance, mentors
+from database import create_db_and_tables
 
 origins = [
     "http://localhost",
@@ -41,40 +24,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-class Lecture(SQLModel, table=True):
-    id: int = Field(primary_key=True)
-    slideName: str
-    url: str
-
-class Homework(SQLModel, table=True):
-    id: int = Field(primary_key=True)
-    hwName: str
-    url: str
-
-class Slack(SQLModel, table=True):
-    id: int = Field(primary_key=True)
-    slackName: str
-    url: str
-    slackChannel: str
-
-class Attendance(SQLModel, table=True):
-    id: int = Field(primary_key=True)
-    studentName: str
-    attendance: str
-    date: str
-
-class Mentors(SQLModel, table=True):
-    id: int = Field(primary_key=True)
-    mentorName: str
-    mentorEmail: str
-    mentorPhone: str
-    mentorSlack: str
     
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
 
-
+# including the routers to different files
+app.include_router(lecture.router, prefix="/lectures", tags=["Lectures"])
+app.include_router(slack.router, prefix="/slack", tags=["Slack"])
+app.include_router(homework.router, prefix="/homeworks", tags=["Homeworks"])
+app.include_router(attendance.router, prefix="/attendance", tags=["Attendance"])
+app.include_router(mentors.router, prefix="/mentors", tags=["Mentors"])
 
 # # Add CORS middleware to allow access from any origin
 # app.add_middleware(
