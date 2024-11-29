@@ -79,7 +79,6 @@ CREATE TABLE IF NOT EXISTS mentors (
 # Execute table creation
 cur.execute(create_lecture_table)
 cur.execute(create_homework_table)
-cur.execute("DROP TABLE slack")
 cur.execute(create_slack_table)
 cur.execute(create_attendance_table)
 cur.execute(create_mentors_table)
