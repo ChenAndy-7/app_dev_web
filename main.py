@@ -26,7 +26,7 @@ app.add_middleware(
 )
     
 @app.on_event("startup")
-def on_startup():
+async def on_startup():
     create_db_and_tables()
 
 # including the routers to different files
