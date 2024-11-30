@@ -19,6 +19,7 @@ class SlackBase(SQLModel):
     content: str = Field(description="The content of the message")
     type: str = Field(description="The category the message falls under")
     isImportant: int = Field(default=0, description="Whether the message is considered important (0 for false, 1 for true)")
+    forLater: int = Field(default=0, description="Whether the message should be sent for later")
     timestamp: str = Field(description="The time and date of the tweet's creation")
 
 class Slack(SlackBase, table=True):

@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS slack (
     content TEXT NOT NULL,
     type TEXT NOT NULL,
     isImportant INTEGER NOT NULL,
+    forLater INTEGER NOT NULL,
     timestamp TEXT NOT NULL
 );
 """
@@ -85,7 +86,7 @@ cur.execute(create_mentors_table)
 
 cur.executemany("INSERT INTO lecture VALUES (?, ?, ?)", lecture)
 cur.executemany("INSERT INTO homework VALUES (?, ?, ?)", homework)
-cur.executemany("INSERT INTO slack VALUES (?, ?, ?, ?, ?, ?)", slack)
+cur.executemany("INSERT INTO slack VALUES (?, ?, ?, ?, ?, ?, ?)", slack)
 cur.executemany("INSERT INTO attendance VALUES (?, ?, ?, ?)", attendance)
 cur.executemany("INSERT INTO mentors VALUES (?, ?, ?, ?, ?)", mentors)
 
