@@ -27,6 +27,7 @@ function Slack() {
     const [addingMessage, setAddingMessage] = useState(false);
     const [formData, setFormData] = useState<FormData>({ id: undefined, content: "", type: "", isImportant: false, forLater: false });
     const [selectedType, setSelectedType] = useState<string>('');
+    const [showImportant, setShowImportant] = useState<boolean>(false);
 
     async function fetchMessages() {
         try {
@@ -41,7 +42,8 @@ function Slack() {
             const filteredMessages = data.filter((message: Message) => {
                 const isForLaterValid = message.forLater === 0; // Only include messages where forLater is false
                 const isTypeValid = selectedType ? message.type === selectedType : true; // Filter by type if selected
-                return isForLaterValid && isTypeValid; // Combine the conditions
+                const isImportantValid = showImportant ? message.isImportant === 1 : true; // Filter by importance if showImportant is true
+                return isForLaterValid && isTypeValid && isImportantValid; // Combine the conditions
             });
             // Sort messages by timestamp in descending order (most recent first)
             const sortedMessages = filteredMessages.sort((a, b) => {
@@ -61,7 +63,7 @@ function Slack() {
 
     useEffect(() => {
         fetchMessages();
-    }, [selectedType]);
+    }, [selectedType, showImportant]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -81,7 +83,7 @@ function Slack() {
             ? `http://127.0.0.1:8000/slack/${formData.id}` // Use the message ID for the PUT request
             : "http://127.0.0.1:8000/slack/new";
         const method = isEdit ? "PUT" : "POST";
-        
+
         try {
             const response = await fetch(url, {
                 method: method,
@@ -101,7 +103,7 @@ function Slack() {
             if (!response.ok) {
                 throw new Error("Failed to create message.");
             }
-            const responseData = await response.json();
+
             setFormData({ id: undefined, content: "", type: "", isImportant: false, forLater: false });
             setAddingMessage(false);
             await fetchMessages();
@@ -152,40 +154,51 @@ function Slack() {
                     > Slack</a>
                 </h1>
             </div>
-            <div className="message-feed">
-                <h2>Saved for Later</h2>
-                {laterMessages.map((message) => (
-                    <div key={message.id} className="message-container">
-                        <div
-                            onClick={() => deleteMessage(message.id)}
-                            className="delete-message"
-                        >
-                            x
+            <div className="later-messages-container">
+                <div className="message-feed">
+                    <h1>Saved for Later Messages</h1>
+                    {laterMessages.map((message) => (
+                        <div key={message.id} className="message-container">
+                            <div
+                                onClick={() => deleteMessage(message.id)}
+                                className="delete-message"
+                            >
+                                x
+                            </div>
+                            <div className="message-content">
+                                <p><strong>{message.username}</strong>: {message.content}</p>
+                                <p>Type: {message.type}</p>
+                                <button onClick={() => editMessage(message)}>Edit/Send</button>
+                            </div>
                         </div>
-                        <div className="message-content">
-                            <p><strong>{message.username}</strong>: {message.content}</p>
-                            <p>Type: {message.type}</p>
-                            <button onClick={() => editMessage(message)}>Edit/Send</button>
-                        </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
             <div className="slack-messages-container">
-                <h1>Slack Messages</h1>
+                <h1>Active Messages</h1>
                 <div className="filter-container">
-                    <label className="filter">Filter by Type:</label>
-                    <select
-                        id="message-type"
-                        value={selectedType}
-                        className="dropdown"
-                        onChange={(e) => setSelectedType(e.target.value)}
-                    >
-                        <option value="">All</option>
-                        <option value="HW">HW</option>
-                        <option value="Lecture">Lecture</option>
-                        <option value="Event">Event</option>
-                        <option value="Other">Other</option>
-                    </select>
+                    <label className="filter">Filter by Type:
+                        <select
+                            id="message-type"
+                            value={selectedType}
+                            className="dropdown"
+                            onChange={(e) => setSelectedType(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            <option value="HW">HW</option>
+                            <option value="Lecture">Lecture</option>
+                            <option value="Event">Event</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </label>
+                    <label className="filter">
+                        Only Show Important:
+                        <input
+                            type="checkbox"
+                            checked={showImportant}
+                            onChange={(e) => setShowImportant(e.target.checked)}
+                        />
+                    </label>
                 </div>
                 <div className="message-feed">
                     {messages.map((message) => (
@@ -200,6 +213,7 @@ function Slack() {
                                 <p><strong>{message.username}</strong>: {message.content}</p>
                                 <p>Type: {message.type}</p>
                                 <p>{new Date(message.timestamp).toLocaleString()}</p>
+                                <button onClick={() => editMessage(message)}>Edit</button>
                             </div>
                         </div>
                     ))}
