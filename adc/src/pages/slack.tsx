@@ -7,16 +7,26 @@ interface Message {
     content: string;
     type: string;
     isImportant: number;
+    forLater: number;
     timestamp: string;
+}
+
+interface FormData {
+    id: number | undefined; // `id` can be a number or undefined
+    content: string;
+    type: string;
+    isImportant: boolean;
+    forLater: boolean;
 }
 
 function Slack() {
     const [messages, setMessages] = useState<Message[]>([]);
+    const [laterMessages, setLaterMessages] = useState<Message[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [addingMessage, setAddingMessage] = useState(false);
-    const [formData, setFormData] = useState({ content: "", type: "", isImportant: false });
-    const [selectedType, setSelectedType] = useState<string>(''); 
+    const [formData, setFormData] = useState<FormData>({ id: undefined, content: "", type: "", isImportant: false, forLater: false });
+    const [selectedType, setSelectedType] = useState<string>('');
 
     async function fetchMessages() {
         try {
@@ -26,19 +36,22 @@ function Slack() {
             }
             const data: Message[] = await response.json();
 
-            // Filter messages by type if a type is selected
-            const filteredMessages = selectedType
-                ? data.filter((message: Message) => message.type === selectedType)
-                : data;
+            const laterMessages = data.filter((message: Message) => message.forLater === 1);
 
+            const filteredMessages = data.filter((message: Message) => {
+                const isForLaterValid = message.forLater === 0; // Only include messages where forLater is false
+                const isTypeValid = selectedType ? message.type === selectedType : true; // Filter by type if selected
+                return isForLaterValid && isTypeValid; // Combine the conditions
+            });
             // Sort messages by timestamp in descending order (most recent first)
             const sortedMessages = filteredMessages.sort((a, b) => {
                 const dateA = new Date(a.timestamp);
                 const dateB = new Date(b.timestamp);
-                return dateB.getTime() - dateA.getTime(); 
+                return dateB.getTime() - dateA.getTime();
             });
-    
+
             setMessages(sortedMessages);
+            setLaterMessages(laterMessages);
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -48,7 +61,7 @@ function Slack() {
 
     useEffect(() => {
         fetchMessages();
-    }, [selectedType]); 
+    }, [selectedType]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -61,9 +74,17 @@ function Slack() {
     // Add a new message
     async function createNewMessage(e: React.FormEvent) {
         e.preventDefault();
+
+        const isEdit = formData.id !== undefined;
+
+        const url = isEdit
+            ? `http://127.0.0.1:8000/slack/${formData.id}` // Use the message ID for the PUT request
+            : "http://127.0.0.1:8000/slack/new";
+        const method = isEdit ? "PUT" : "POST";
+        
         try {
-            const response = await fetch("http://127.0.0.1:8000/slack/new", {
-                method: "POST",
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -73,15 +94,15 @@ function Slack() {
                     content: formData.content,
                     type: formData.type,
                     isImportant: formData.isImportant ? 1 : 0,
+                    forLater: formData.forLater ? 1 : 0,
                     timestamp: new Date().toISOString(),
                 }),
             });
-
             if (!response.ok) {
                 throw new Error("Failed to create message.");
             }
-
-            setFormData({ content: "", type: "", isImportant: false });
+            const responseData = await response.json();
+            setFormData({ id: undefined, content: "", type: "", isImportant: false, forLater: false });
             setAddingMessage(false);
             await fetchMessages();
         } catch (err) {
@@ -91,8 +112,21 @@ function Slack() {
 
     // Cancel message creation
     function cancelMessageCreation() {
-        setFormData({ content: "", type: "", isImportant: false });
+        setFormData({ id: undefined, content: "", type: "", isImportant: false, forLater: false });
         setAddingMessage(false); // Close the form
+    }
+
+    // For editing saved for later messages
+    function editMessage(message: Message) {
+        setFormData({
+            id: message.id,
+            content: message.content,
+            type: message.type,
+            isImportant: Boolean(message.isImportant),
+            forLater: Boolean(message.forLater)
+        });
+
+        setAddingMessage(true); // Show the overlay
     }
 
     // Delete a message
@@ -118,6 +152,24 @@ function Slack() {
                     > Slack</a>
                 </h1>
             </div>
+            <div className="message-feed">
+                <h2>Saved for Later</h2>
+                {laterMessages.map((message) => (
+                    <div key={message.id} className="message-container">
+                        <div
+                            onClick={() => deleteMessage(message.id)}
+                            className="delete-message"
+                        >
+                            x
+                        </div>
+                        <div className="message-content">
+                            <p><strong>{message.username}</strong>: {message.content}</p>
+                            <p>Type: {message.type}</p>
+                            <button onClick={() => editMessage(message)}>Edit/Send</button>
+                        </div>
+                    </div>
+                ))}
+            </div>
             <div className="slack-messages-container">
                 <h1>Slack Messages</h1>
                 <div className="filter-container">
@@ -128,7 +180,7 @@ function Slack() {
                         className="dropdown"
                         onChange={(e) => setSelectedType(e.target.value)}
                     >
-                        <option value="">All</option> 
+                        <option value="">All</option>
                         <option value="HW">HW</option>
                         <option value="Lecture">Lecture</option>
                         <option value="Event">Event</option>
@@ -194,6 +246,16 @@ function Slack() {
                                     checked={formData.isImportant}
                                     onChange={(e) =>
                                         setFormData({ ...formData, isImportant: e.target.checked })
+                                    }
+                                />
+                            </label>
+                            <label>
+                                Save for Later:
+                                <input
+                                    type="checkbox"
+                                    checked={formData.forLater}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, forLater: e.target.checked })
                                     }
                                 />
                             </label>
