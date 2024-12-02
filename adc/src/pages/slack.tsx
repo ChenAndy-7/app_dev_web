@@ -77,6 +77,11 @@ function Slack() {
     async function createNewMessage(e: React.FormEvent) {
         e.preventDefault();
 
+        if (!formData.content.trim() || !formData.type.trim()) {
+            alert("Please provide both a message content and a type before submitting.");
+            return; 
+        }
+
         const isEdit = formData.id !== undefined;
 
         const url = isEdit
@@ -157,7 +162,8 @@ function Slack() {
             <div className="later-messages-container">
                 <div className="message-feed">
                     <h1>Saved for Later Messages</h1>
-                    {laterMessages.map((message) => (
+
+                    {laterMessages.length > 0 ? (laterMessages.map((message) => (
                         <div key={message.id} className="message-container">
                             <div
                                 onClick={() => deleteMessage(message.id)}
@@ -171,7 +177,9 @@ function Slack() {
                                 <button onClick={() => editMessage(message)}>Edit/Send</button>
                             </div>
                         </div>
-                    ))}
+                    ))) : (
+                        <p>No drafted messages yet!</p>
+                    )}
                 </div>
             </div>
             <div className="slack-messages-container">
@@ -201,7 +209,7 @@ function Slack() {
                     </label>
                 </div>
                 <div className="message-feed">
-                    {messages.map((message) => (
+                    {messages.length > 0 ? (messages.map((message) => (
                         <div key={message.id} className={`message-container ${message.isImportant ? 'important' : ''}`} >
                             <div
                                 onClick={() => deleteMessage(message.id)}
@@ -216,7 +224,9 @@ function Slack() {
                                 <button onClick={() => editMessage(message)}>Edit</button>
                             </div>
                         </div>
-                    ))}
+                    ))) : (
+                        <p>No messages yet!</p>
+                    )}
                 </div>
             </div>
 
