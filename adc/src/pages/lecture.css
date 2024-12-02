@@ -1,0 +1,136 @@
+.leftClicker, 
+.rightClicker { 
+    width: 50px; 
+    height: 50px; 
+    transition: .5s; 
+    float: left; 
+    box-shadow: -2px 2px 0 black; 
+    border-radius: 50%;
+    background-color: #ddd;
+    border: 2px;
+    color: black;
+} 
+
+.lecture-container { 
+    /*margin-top: 1.25rem;
+    padding: 1.25rem;
+    background-color: white; */
+}
+
+
+.Title, .link{
+    width: 100%;
+    max-width: 500px;  /* adjust as needed */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    word-wrap: break-word;  /* Prevents long words from overflowing */
+    max-width: 100%;
+    text-wrap: wrap;
+}
+
+.slide{
+    border: 2px solid black;
+    box-shadow: -2px 2px 0 black; 
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #ddd;
+    color: black;
+    width: 400px;
+    height: 300px;
+    transition: background-color 0.3s, transform 0.3s;
+    margin-bottom: 20px;
+    margin: auto;
+}
+
+.delete-Button{
+    background-color: #f44336;  /* Red color */
+    color:black;
+    border: 2px solid black;  /* Add a border for visibility */
+    position: relative;
+    text-align: center;
+}
+
+.section1 {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+    align-items: center;
+    gap:20pc;
+    /* Add any existing section1 styles */
+}
+
+.section2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;  /* Optional: adds some spacing */
+}
+
+/* Optional: If you want to style the button itself */
+.section2 button {
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+/* Optional: If you want to control the image size */
+#addImage {
+    width: 50px;  /* Adjust size as needed */
+    height: auto;
+}
+
+/*popUp css*/
+.popup{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.2); /* Semi-transparent black background */
+    color:black;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popInner{
+    position: relative;
+    padding: 32px;
+    padding-bottom: 70px;  /* Add extra padding at bottom for the button */
+    width: 100%;
+    max-width: 640px;
+    background-color: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.close-Button {
+    position: absolute;  /* Changed from fixed to absolute */
+    top: 16px;          /* Add some padding from the top */
+    right: 16px;        /* Add some padding from the right */
+    cursor: pointer;    /* Optional: adds a pointer cursor on hover */
+}
+
+.add-Button{
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px;
+    cursor: pointer;
+}
+
+.popup-txt{
+    display: flex;
+    flex-direction: column;
+    left: 16px;
+    gap: 1rem
+}
+
