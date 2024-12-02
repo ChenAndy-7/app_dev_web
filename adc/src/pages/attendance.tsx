@@ -14,10 +14,9 @@ const Attendance = () => {
   useEffect(() => {
     fetch('http://localhost:5175/api/attendance') // This is the correct API endpoint
       .then((response) => response.json())
-      .then((data) => setAttendanceData(data))
+      .then((data) => setAttendanceData(data))  // Set the state with fetched data
       .catch((error) => console.error('Error fetching attendance data:', error));
-  }, []);  
-  
+  }, []);
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -31,10 +30,9 @@ const Attendance = () => {
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();  // Prevent default form submission
-  
-    // Log the data being submitted
+
     console.log("Submitting form with data:", newAttendance);
-  
+
     // Send the new attendance data to the backend
     fetch('http://localhost:5175/api/attendance', {
       method: 'POST',
@@ -46,10 +44,10 @@ const Attendance = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log('New record added:', data);  // Log response from the backend
-  
+
         // Optimistic UI update: Add the new attendance record to the UI
         setAttendanceData((prevData) => [...prevData, data]);
-  
+
         // Reset the form after submission
         setNewAttendance({
           student_name: '',
@@ -59,8 +57,33 @@ const Attendance = () => {
         });
       })
       .catch((error) => console.error('Error adding attendance data:', error));
-  };  
-  
+  };
+
+  // Handle delete attendance
+  const handleDelete = (attendance_id: number) => {
+    // Delete the attendance record from the backend
+    fetch(`http://localhost:5175/api/attendance/${attendance_id}`, {
+      method: 'DELETE',
+    })
+      .then(() => {
+        // Remove the deleted record from the UI
+        setAttendanceData((prevData) =>
+          prevData.filter((record) => record.attendance_id !== attendance_id)
+        );
+        console.log('Attendance record deleted');
+      })
+      .catch((error) => console.error('Error deleting attendance record:', error));
+  };
+
+  // Clear form
+  const handleClear = () => {
+    setNewAttendance({
+      student_name: '',
+      class_name: '',
+      attendance_date: '',
+      status: 'Present', // Default status
+    });
+  };
 
   return (
     <div>
@@ -110,8 +133,10 @@ const Attendance = () => {
           </select>
         </div>
         <button type="submit">Add Attendance</button>
+        <button type="button" onClick={handleClear}>Clear Form</button> {/* Clear button */}
       </form>
 
+      {/* Table to display the attendance records */}
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
@@ -119,6 +144,7 @@ const Attendance = () => {
             <th style={{ border: '1px solid black', padding: '8px' }}>Class Name</th>
             <th style={{ border: '1px solid black', padding: '8px' }}>Date</th>
             <th style={{ border: '1px solid black', padding: '8px' }}>Status</th>
+            <th style={{ border: '1px solid black', padding: '8px' }}>Actions</th> {/* Actions column */}
           </tr>
         </thead>
         <tbody>
@@ -129,11 +155,14 @@ const Attendance = () => {
                 <td style={{ border: '1px solid black', padding: '8px' }}>{record.class_name}</td>
                 <td style={{ border: '1px solid black', padding: '8px' }}>{record.attendance_date}</td>
                 <td style={{ border: '1px solid black', padding: '8px' }}>{record.status}</td>
+                <td style={{ border: '1px solid black', padding: '8px' }}>
+                  <button onClick={() => handleDelete(record.attendance_id)}>Delete</button> {/* Delete button */}
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={4} style={{ textAlign: 'center', padding: '8px' }}>
+              <td colSpan={5} style={{ textAlign: 'center', padding: '8px' }}>
                 No attendance records available.
               </td>
             </tr>
