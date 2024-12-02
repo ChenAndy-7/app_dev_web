@@ -12,11 +12,12 @@ const Attendance = () => {
 
   // Fetch attendance data on component mount
   useEffect(() => {
-    fetch('http://localhost:5000/api/attendance')
+    fetch('http://localhost:5175/api/attendance') // This is the correct API endpoint
       .then((response) => response.json())
       .then((data) => setAttendanceData(data))
       .catch((error) => console.error('Error fetching attendance data:', error));
-  }, []);
+  }, []);  
+  
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -29,29 +30,37 @@ const Attendance = () => {
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+    e.preventDefault();  // Prevent default form submission
+  
+    // Log the data being submitted
+    console.log("Submitting form with data:", newAttendance);
+  
     // Send the new attendance data to the backend
-    fetch('http://localhost:5000/api/attendance', {
+    fetch('http://localhost:5175/api/attendance', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json', // Ensure JSON is being sent
       },
-      body: JSON.stringify(newAttendance),
+      body: JSON.stringify(newAttendance), // Send data as JSON
     })
       .then((response) => response.json())
       .then((data) => {
-        // Add the new data to the table (optimistic update)
+        console.log('New record added:', data);  // Log response from the backend
+  
+        // Optimistic UI update: Add the new attendance record to the UI
         setAttendanceData((prevData) => [...prevData, data]);
+  
+        // Reset the form after submission
         setNewAttendance({
           student_name: '',
           class_name: '',
           attendance_date: '',
-          status: 'Present',
-        }); // Clear the form after submission
+          status: 'Present', // Default status
+        });
       })
       .catch((error) => console.error('Error adding attendance data:', error));
-  };
+  };  
+  
 
   return (
     <div>
