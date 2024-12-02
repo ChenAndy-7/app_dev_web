@@ -1,0 +1,22 @@
+/* Apply styles to the table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Apply styles to table headers */
+th {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
+  background-color: #fffefe;
+  color: #000000;  /* Black text color for headers */
+}
+
+/* Apply styles to table data */
+td {
+  border: 1px solid rgb(255, 255, 255);
+  padding: 8px;
+  text-align: left;
+  color: #ffffff; /* Green text color for data cells */
+}
