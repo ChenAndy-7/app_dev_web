@@ -10,11 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "chart.js": "^4.4.7",
-    "cors": "^2.8.5",
-    "express": "^4.21.1",
-    "mysql": "^2.18.1",
-    "nodemon": "^3.1.7",
+    "motion": "^11.12.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
