@@ -1,6 +1,11 @@
 body {
     background-color: rgb(128, 128, 128);
-        background: radial-gradient(circle, #4468b5, #162a7d); /* Circular gradient */
+    background: radial-gradient(circle, #4468b5, #162a7d); /* Circular gradient */
+    background-image: url('https://images.rawpixel.com/image_social_landscape/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm0zNzgtMDkta255OWZoM2IuanBn.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 #title {

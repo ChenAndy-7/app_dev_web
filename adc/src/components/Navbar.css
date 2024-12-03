@@ -1,24 +1,24 @@
 .nav {
-    background-color: rgb(38, 102, 229);
     color: white;
     display: flex;
     justify-content: space-between;
     align-items: stretch;
     box-sizing: border-box;
     gap: 2rem;
-    padding: 0 1rem;
+    padding: 1rem 2rem;
     padding-right: 1 rem;
     position: fixed; 
     top: 0; 
     left: 0; 
     width: 100%;
     z-index: 1000; 
-    border-bottom: 2px solid #000;
+    border-bottom: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 5rem;
 }
   
   .site-title {
-    font-size: 2rem;
+    font-size: 2.5rem;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -30,6 +30,7 @@
     list-style: none;
     display: flex;
     gap: 1rem;
+    font-size: 1.25rem;
   }
   
   .nav a {
@@ -38,7 +39,7 @@
     height: 100%;
     display: flex;
     align-items: center;
-    padding: .25rem;
+    padding: 0.5rem;
   }
   
   .nav li.active {
@@ -52,7 +53,7 @@
   }
 
   #logo {
-    width: 3rem;
-    height: 3rem;
-    margin-right: 0.5rem;
+    width: 4rem;
+    height: 4rem;
+    margin-right: 1rem;
   }
