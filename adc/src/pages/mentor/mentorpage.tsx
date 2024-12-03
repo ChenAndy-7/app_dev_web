@@ -3,13 +3,24 @@ import { Mentor } from './interface'; // Assuming 'interface' is where your Ment
 import './mentor.css';
 
 interface Groups {
+  id: number
   mentors: Mentor[]
   students: string[]
 }
 
+interface GroupsBetween {
+  id: number
+  mentor1: string
+  mentor2: string
+  students: string[]
+}
+
+
+
+
 // AddGroupForm Component (inside the same file)
 interface AddGroupFormProps {
-  onAddGroup: (mentors: Mentor[], students: string[]) => void;
+  onAddGroup: (/*mentors: Mentor[], students: string[]*/) => void;
   mentors: Mentor[];
 }
 
@@ -79,7 +90,7 @@ const AddGroupForm: React.FC<AddGroupFormProps> = ({ onAddGroup, mentors }) => {
         return;
       }
 
-      alert("Group added successfully!");
+      onAddGroup();
     } catch (error) {
       console.error("Error adding group:", error);
       alert("Failed to add the group.");
@@ -155,13 +166,14 @@ const AddGroupForm: React.FC<AddGroupFormProps> = ({ onAddGroup, mentors }) => {
           </div>
         </div>
       </div>
-      <button type="submit" className="addgroupbut" onClick={() => handleAddGroup(selectedMentors[0].name, selectedMentors[1].name, students)}>Add Group</button>
+      <button type="submit" className="addgroupbut" /*onClick={() => handleAddGroup(selectedMentors[0].name, selectedMentors[1].name, students)}*/>Add Group</button>
     </form>
   );
 };
 
 // GroupCard Component (inside the same file)
 interface GroupCardProps {
+  id: number;
   mentors: Mentor[];
   students: string[];
   onDeleteGroup: () => void;
@@ -200,7 +212,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ mentors, students, onDeleteGroup 
 
 const MentorPage: React.FC = () => {
   const [mentors, setMentors] = useState<Mentor[]>([]);
-  const [groups, setGroups] = useState<{ mentors: Mentor[], students: string[] }[]>([]);
+  const [groups, setGroups] = useState<{ mentors: Mentor[], students: string[], id: number }[]>([]);
 
   useEffect(() => {
     const fetchedMentors: Mentor[] = [
@@ -226,49 +238,66 @@ const MentorPage: React.FC = () => {
       if (!response.ok) {
         throw new Error("Failed to fetch groups");
       }
-  
-      const data: Groups[] = await response.json();
 
+      const data: GroupsBetween[] = await response.json();
       console.log(data);
-      
-      // const updatedGroups = data.map((group) => {
-      //   // Since group.mentors is already an array of Mentor objects, we can use it directly
-      //   const mentor1 = mentors.find(group.mentors[0]);
-      //   const mentor2 = group.mentors[1];
-  
-      //   // Log to debug and check the fetched mentors
-      //   console.log(`Found mentors for group: ${mentor1.name}, ${mentor2.name}`);
-      //   console.log('Mentor1:', mentor1, 'Mentor2:', mentor2);
-  
-      //   return {
-      //     mentors: [mentor1, mentor2],  // Use the Mentor objects directly
-      //     students: group.students,      // Use the students array directly
-      //   };
-      // });
-  
-      // setGroups(updatedGroups);
-      // console.log(updatedGroups);
+
+      const updatedGroups = data.map((group) => {
+        const mentor1 = mentors.find((m) => m.name === group.mentor1);
+        const mentor2 = mentors.find((m) => m.name === group.mentor2);
+        console.log(group.id)
+
+        if (!mentor1 || !mentor2) {
+          console.error(`Error: One or both mentors not found for group: ${group.mentor1}, ${group.mentor2}`);
+          return null;
+        }
+
+        return {
+          id: group.id,
+          mentors: [mentor1, mentor2],
+          students: group.students,
+        };
+      }).filter((group) => group !== null);
+
+      setGroups(updatedGroups as Groups[]);
     } catch (error) {
       console.error("Error fetching groups:", error);
     }
   };
-  
-  
 
-  const handleDeleteGroup = (index: number) => {
-    const updatedGroups = groups.filter((_, i) => i !== index);
-    setGroups(updatedGroups);
+  const handleDeleteGroup = async (groupId: number) => {
+    console.log("Deleting group with id:", groupId);
+    try {
+      const response = await fetch(`http://localhost:8000/groups/${groupId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.detail}`);
+        return;
+      }
+
+      // Remove the group from the state after deletion
+      const updatedGroups = groups.filter((group) => group.id !== groupId);
+      setGroups(updatedGroups);
+      fetchGroups();
+    } catch (error) {
+      console.error("Error deleting group:", error);
+      alert("Failed to delete the group.");
+    }
   };
 
   return (
     <div>
-      <AddGroupForm mentors={mentors} onAddGroup={() => fetchGroups()} />
-      {groups.map((group, index) => (
+      <AddGroupForm mentors={mentors} onAddGroup={fetchGroups} />
+      {groups.map((group) => (
         <GroupCard
-          key={index}
+          key={group.id}  // Use group.id as key for better tracking
+          id={group.id}
           mentors={group.mentors}
           students={group.students}
-          onDeleteGroup={() => handleDeleteGroup(index)}
+          onDeleteGroup={() => handleDeleteGroup(group.id)}  // Pass the group id to delete
         />
       ))}
     </div>
