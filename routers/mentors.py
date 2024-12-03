@@ -24,6 +24,7 @@ async def get_groups(session: SessionDep):
     # Format response to split students into a list
     return [
         {
+            "id": group.id,
             "mentor1": group.mentor1,
             "mentor2": group.mentor2,
             "students": group.students.split(",") if group.students else []  # Convert string to list
@@ -39,6 +40,15 @@ async def add_group(group: GroupsBase, session: SessionDep):
     session.commit()
     session.refresh(db_group)
     return db_group
+
+@router.delete("/groups/{group_id}")
+def delete_group(group_id: int, session: SessionDep):
+    group = session.get(Groups, group_id)
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+    session.delete(group)
+    session.commit()
+    return {"ok": True}
 
 # @router.get("/tweets")
 # async def get_tweets(session: SessionDep):
