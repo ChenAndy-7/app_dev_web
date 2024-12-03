@@ -1,12 +1,44 @@
-from fastapi import APIRouter, Depends
-from sqlmodel import Session
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException,  Query
+from sqlmodel import Session, select
 from database import get_session
-from models import Mentors, MentorsBase
+from models import GroupsBase, Groups
+from typing import Annotated
 
 router = APIRouter()
+SessionDep = Annotated[Session, Depends(get_session)]
 
 # here is where you do the fastapi stuff:
+# API to add group
+# @router.post("/add-group/")
+# async def add_group(group: GroupsBase, session: SessionDep):
+#     db_groups = Groups.model_validate(Groups)
+#     session.add(db_groups)
+#     session.commit()
+#     session.refresh(db_groups)
+#     return db_groups
+@router.get("/groups")
+async def get_groups(session: SessionDep):
+    # Query all groups from the database
+    groups = session.exec(select(Groups)).all()
+    
+    # Format response to split students into a list
+    return [
+        {
+            "mentor1": group.mentor1,
+            "mentor2": group.mentor2,
+            "students": group.students.split(",") if group.students else []  # Convert string to list
+        }
+        for group in groups
+    ]
+
+
+@router.post("/groups/new", response_model=Groups)
+async def add_group(group: GroupsBase, session: SessionDep):
+    db_group = Groups.from_orm(group)
+    session.add(db_group)
+    session.commit()
+    session.refresh(db_group)
+    return db_group
 
 # @router.get("/tweets")
 # async def get_tweets(session: SessionDep):

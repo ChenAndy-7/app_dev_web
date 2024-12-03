@@ -1,4 +1,7 @@
 from sqlmodel import SQLModel, Field
+from typing import List
+from sqlalchemy.types import TypeDecorator, Text
+import json
 
 class LectureBase(SQLModel):
     slideName: str
@@ -45,3 +48,21 @@ class MentorsBase(SQLModel):
 
 class Mentors(MentorsBase, table=True):
     id: int | None = Field(default=None, primary_key=True) 
+
+
+class GroupsBase(SQLModel):
+    mentor1: str
+    mentor2: str
+    students: str # Apply the custom type here
+
+    def get_students(self) -> list[str]:
+        """Convert the comma-separated string to a list."""
+        return self.students.split(",") if self.students else []
+
+    def set_students(self, students: list[str]):
+        """Convert a list of student names to a comma-separated string."""
+        self.students = ",".join(students)
+
+
+class Groups(GroupsBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
