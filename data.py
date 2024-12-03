@@ -1,9 +1,9 @@
 import sqlite3
 
-# connect to the SQLite database
+# Connect to the SQLite database
 con = sqlite3.connect('data.db')
 
-# create a cursor object using the connection
+# Create a cursor object using the connection
 cur = con.cursor()
 
 lecture = [
@@ -16,18 +16,17 @@ lecture = [
 ]
 
 homework = [
-    (1, "HW1", "https://forms.gle/MQejHVuzuVzj3uGE7"),
-    (2, "HW2", "https://forms.gle/6XVNWAyVc5ADfZxz9"),
-    (3, "HW3", "https://forms.gle/fhbZwTntgESBEY6j8"),
-    (4, "HW4", "https://forms.gle/2bRc93qwD8nwJafu5"),
-    (5, "Hw5", "https://forms.gle/65u4Er1kCaEMJioa7")
+    (1, "Personal Website", "Make a personal website using HTML and CSS", "2024-02-01", "https://forms.gle/MQejHVuzuVzj3uGE7"),
+    (2, "Flexbox, Git: push and pull", "Complete levels and use flexbox in your personal website", "2024-02-08", "https://forms.gle/6XVNWAyVc5ADfZxz9"),
+    (3, "Notecard App", "starter code in github, see slack for details", "2024-02-15", "https://forms.gle/fhbZwTntgESBEY6j8"),
+    (4, "Memory Match Game", "starter code in github, see slack for details", "2024-02-22", "https://forms.gle/2bRc93qwD8nwJafu5"),
+    (5, "React Reading", "learn about React concepts", "2024-02-29", "https://forms.gle/65u4Er1kCaEMJioa7"),
+    (6, "Twitter Clone + Advanced React Reading", "make twitter clone, starter code in github, see slack for details. Learn about advanced React concepts", "2024-03-06", "https://forms.gle/8SXRVwGs4q2MQHJD6")
 ]
 
-slack = [ ]
-
-attendance =  [ ]
-
-mentors = [ ]
+slack = []
+attendance = []
+mentors = []
 
 # Define SQL for creating tables
 create_lecture_table = """
@@ -44,6 +43,8 @@ create_homework_table = """
 CREATE TABLE IF NOT EXISTS homework (
     id INTEGER PRIMARY KEY,
     hwName TEXT NOT NULL,
+    description TEXT NOT NULL,
+    dueDate TEXT NOT NULL,
     url TEXT NOT NULL
 );
 """
@@ -87,9 +88,13 @@ cur.execute(create_attendance_table)
 cur.execute(create_mentors_table)
 
 cur.executemany("INSERT INTO lecture VALUES (?, ?, ?, ?, ?)", lecture)
-cur.executemany("INSERT INTO homework VALUES (?, ?, ?)", homework)
+cur.executemany("INSERT INTO homework VALUES (?, ?, ?, ?, ?)", homework)
 cur.executemany("INSERT INTO slack VALUES (?, ?, ?, ?, ?, ?, ?)", slack)
 cur.executemany("INSERT INTO attendance VALUES (?, ?, ?, ?)", attendance)
 cur.executemany("INSERT INTO mentors VALUES (?, ?, ?, ?, ?)", mentors)
 
 con.commit()
+print("Database initialized with initial data")
+
+con.close()
+
