@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px; /* Add consistent spacing between elements */
-  margin: 40px auto; /* Center the container horizontally */
+  margin: 100px auto; /* Center the container horizontally */
   padding: 20px; /* Ensure consistent inner spacing */
   max-width: 1200px; /* Set a maximum width for better responsiveness */
   background-color: #f7f9fc; /* Subtle light background for contrast */
