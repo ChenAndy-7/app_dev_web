@@ -150,15 +150,6 @@ function Slack() {
 
     return (
         <div className="slack">
-            <div className="slack-link">
-                <h1>Link to:&nbsp;
-                    <a
-                        href="https://appdevclubumd.slack.com/archives/C07N90NM3AA"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    > Slack</a>
-                </h1>
-            </div>
             <div className="later-messages-container">
                 <div className="message-feed">
                     <h1>Saved for Later Messages</h1>
@@ -231,9 +222,17 @@ function Slack() {
             </div>
 
             {!addingMessage && (
-                <div onClick={() => setAddingMessage(!addingMessage)} className="add-message">
-                    +
-                </div>
+                <a
+                href="https://appdevclubumd.slack.com/archives/C07N90NM3AA"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="slack-btn"
+            > 
+                <img className="slack-icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/2048px-Slack_icon_2019.svg.png" alt="Slack Icon" />
+            </a>
+            )}
+            {!addingMessage && (
+                <div onClick={() => setAddingMessage(!addingMessage)} className="add-message">+</div>
             )}
 
             {addingMessage && (
