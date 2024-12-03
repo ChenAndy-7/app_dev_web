@@ -23,12 +23,15 @@ const Attendance = () => {
   });
 
   const [attendanceStats, setAttendanceStats] = useState({ present: 0, absent: 0 });
-  const [studentStats, setStudentStats] = useState({ present: 0, absent: 0 });
-
   const [dates, setDates] = useState<string[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<string>('');
 
+  // Fetch attendance records
   useEffect(() => {
+    fetchAttendanceData();
+  }, []);
+
+  const fetchAttendanceData = () => {
     fetch('http://localhost:5175/api/attendance')
       .then((response) => response.json())
       .then((data) => {
@@ -37,21 +40,12 @@ const Attendance = () => {
         generateDates(data);
       })
       .catch((error) => console.error('Error fetching attendance data:', error));
-  }, []);
+  };
 
   const updateAttendanceStats = (data: any[]) => {
     const presentCount = data.filter((record) => record.status === 'Present').length;
     const absentCount = data.filter((record) => record.status === 'Absent').length;
     setAttendanceStats({ present: presentCount, absent: absentCount });
-  };
-
-  const updateStudentStats = (studentName: string) => {
-    const studentRecords = attendanceData.filter(
-      (record) => record.student_name === studentName
-    );
-    const presentCount = studentRecords.filter((record) => record.status === 'Present').length;
-    const absentCount = studentRecords.filter((record) => record.status === 'Absent').length;
-    setStudentStats({ present: presentCount, absent: absentCount });
   };
 
   const generateDates = (data: any[]) => {
@@ -63,10 +57,51 @@ const Attendance = () => {
     setDates([...dateSet].sort((a, b) => new Date(a).getTime() - new Date(b).getTime()));
   };
 
-  const handleStudentSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedName = e.target.value;
-    setSelectedStudent(selectedName);
-    updateStudentStats(selectedName);
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const method = newAttendance.attendance_id ? 'PUT' : 'POST';
+    const url = newAttendance.attendance_id
+      ? `http://localhost:5175/api/attendance/${newAttendance.attendance_id}`
+      : 'http://localhost:5175/api/attendance';
+
+    fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newAttendance),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        fetchAttendanceData();
+        setNewAttendance({
+          student_name: '',
+          attendance_date: '',
+          status: 'Present',
+          attendance_id: null,
+        });
+      })
+      .catch((error) => console.error('Error saving attendance:', error));
+  };
+
+  const handleDelete = (id: number) => {
+    fetch(`http://localhost:5175/api/attendance/${id}`, {
+      method: 'DELETE',
+    })
+      .then(() => {
+        fetchAttendanceData();
+      })
+      .catch((error) => console.error('Error deleting attendance:', error));
+  };
+
+  const handleEdit = (record: any) => {
+    setNewAttendance({
+      student_name: record.student_name,
+      attendance_date: new Date(record.attendance_date).toISOString().split('T')[0],
+      status: record.status,
+      attendance_id: record.id,
+    });
   };
 
   const pieChartData = {
@@ -80,22 +115,14 @@ const Attendance = () => {
     ],
   };
 
-  const studentPieChartData = {
-    labels: ['Present', 'Absent'],
-    datasets: [
-      {
-        data: [studentStats.present, studentStats.absent],
-        backgroundColor: ['#2196f3', '#ff9800'], // Blue for Present, Orange for Absent
-        hoverBackgroundColor: ['#64b5f6', '#ffb74d'],
-      },
-    ],
-  };
-
   return (
     <div className="attendance-container">
       <h1>Attendance</h1>
       <div className="flex-container">
-        <form className="form-container">
+        <form
+          className="form-container"
+          onSubmit={handleFormSubmit}
+        >
           <div>
             <label>Student Name:</label>
             <input
@@ -131,10 +158,11 @@ const Attendance = () => {
             >
               <option value="Present">Present</option>
               <option value="Absent">Absent</option>
-              <option value="Late">Late</option>
             </select>
           </div>
-          <button type="submit">Add Attendance</button>
+          <button type="submit">
+            {newAttendance.attendance_id ? 'Update' : 'Add'} Attendance
+          </button>
         </form>
       </div>
 
@@ -150,16 +178,18 @@ const Attendance = () => {
             </tr>
           </thead>
           <tbody>
-            {attendanceData.map((record, index) => (
-              <tr key={index}>
+            {attendanceData.map((record) => (
+              <tr key={record.id}>
                 <td>
-                  <button>Edit</button>
-                  <button>Delete</button>
+                  <button onClick={() => handleEdit(record)}>Edit</button>
+                  <button onClick={() => handleDelete(record.id)}>Delete</button>
                 </td>
                 <td>{record.student_name}</td>
                 {dates.map((date, idx) => (
                   <td key={idx}>
-                    {record.attendance_date === date ? record.status : 'N/A'}
+                    {new Date(record.attendance_date).toLocaleDateString('en-US') === date
+                      ? record.status
+                      : 'N/A'}
                   </td>
                 ))}
               </tr>
@@ -169,46 +199,12 @@ const Attendance = () => {
       </div>
 
       <div className="chart-wrapper">
-  {/* Overall attendance chart */}
-  <div className="chart-container">
-    <h3>Overall Attendance</h3>
-    <Pie data={pieChartData} />
-  </div>
-
-{/* Individual student attendance chart with dropdown */}
-<div className="chart-container individual">
-  <div className="individual-wrapper">
-    <div>
-      <h3>Individual Attendance</h3>
-      {selectedStudent && <Pie data={studentPieChartData} />}
+        <div className="chart-container">
+          <h3>Overall Attendance</h3>
+          <Pie data={pieChartData} />
+        </div>
+      </div>
     </div>
-    <select
-      value={selectedStudent}
-      onChange={handleStudentSelect}
-      className="dropdown"
-    >
-      <option value="">Select a Student</option>
-      {[...new Set(attendanceData.map((record) => record.student_name))].map(
-        (student, idx) => (
-          <option key={idx} value={student}>
-            {student}
-          </option>
-        )
-      )}
-    </select>
-    {/* Display present and absent stats under the dropdown */}
-    {selectedStudent && (
-      <div className="attendance-stats">
-        <p>Present: {studentStats.present}</p>
-        <p>Absent: {studentStats.absent}</p>
-      </div>
-    )}
-  </div>
-</div>
-</div>
-
-
-      </div>
   );
 };
 
