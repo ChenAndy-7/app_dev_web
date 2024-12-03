@@ -258,7 +258,6 @@ tbody td:nth-child(2) {
   color: #f7f7f7;
   width: 150px; /* Set fixed width for dropdown */
   text-align: center; /* Center align the dropdown text */
-  gap: 0px;
 }
 
 /* Attendance stats underneath dropdown */
