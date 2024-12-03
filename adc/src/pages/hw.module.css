@@ -165,8 +165,10 @@
   align-items: center;
   justify-content: center;
   transition: transform 0.2s;
-  line-height: 0;
-  transform: translateY(0.75px);
+  padding: 0;
+  line-height: 1;
+  transform: translateY(0);
+  text-align: center;
 }
 
 .fab:hover {
