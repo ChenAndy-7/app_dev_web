@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import './attendance.css';
-import { Pie } from 'react-chartjs-2';
+import { Pie, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   Title,
   Tooltip,
   Legend,
   ArcElement,
+  BarElement,
   CategoryScale,
   LinearScale,
 } from 'chart.js';
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
+ChartJS.register(Title, Tooltip, Legend, ArcElement, BarElement, CategoryScale, LinearScale);
 
 const Attendance = () => {
   const [attendanceData, setAttendanceData] = useState<any[]>([]);
@@ -19,6 +20,8 @@ const Attendance = () => {
   const [newDate, setNewDate] = useState('');
   const [attendanceStats, setAttendanceStats] = useState({ present: 0, absent: 0 });
   const [dates, setDates] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [dailyStats, setDailyStats] = useState({ present: 0, absent: 0 });
 
   // Fetch attendance records
   useEffect(() => {
@@ -40,6 +43,16 @@ const Attendance = () => {
     const presentCount = data.filter((record) => record.present).length;
     const absentCount = data.filter((record) => !record.present).length;
     setAttendanceStats({ present: presentCount, absent: absentCount });
+  };
+
+  const updateDailyStats = (date: string) => {
+    const recordsForDate = attendanceData.filter(
+      (record) =>
+        new Date(record.attendance_date).toLocaleDateString('en-US') === date
+    );
+    const presentCount = recordsForDate.filter((record) => record.present).length;
+    const absentCount = recordsForDate.filter((record) => !record.present).length;
+    setDailyStats({ present: presentCount, absent: absentCount });
   };
 
   const generateDates = (data: any[]) => {
@@ -72,10 +85,14 @@ const Attendance = () => {
   const handleAddDate = () => {
     if (!newDate.trim()) return;
 
-    // Placeholder for any specific backend handling for new date
     console.log(`Adding new date: ${newDate}`);
     setNewDate('');
-    fetchAttendanceData(); // Refresh data
+    fetchAttendanceData();
+  };
+
+  const handleDateSelect = (date: string) => {
+    setSelectedDate(date);
+    updateDailyStats(date);
   };
 
   const pieChartData = {
@@ -85,6 +102,17 @@ const Attendance = () => {
         data: [attendanceStats.present, attendanceStats.absent],
         backgroundColor: ['#4caf50', '#f44336'],
         hoverBackgroundColor: ['#66bb6a', '#e57373'],
+      },
+    ],
+  };
+
+  const barChartData = {
+    labels: ['Present', 'Absent'],
+    datasets: [
+      {
+        label: `Attendance for ${selectedDate}`,
+        data: [dailyStats.present, dailyStats.absent],
+        backgroundColor: ['#4caf50', '#f44336'],
       },
     ],
   };
@@ -149,11 +177,30 @@ const Attendance = () => {
       </div>
 
       <div className="chart-wrapper">
-        <div className="chart-container">
-          <h3>Overall Attendance</h3>
-          <Pie data={pieChartData} />
-        </div>
-      </div>
+  <div className="chart-container">
+    <h3>Overall Attendance</h3>
+    <Pie data={pieChartData} />
+  </div>
+  <div className="daily-chart-container">
+    <h3>Daily Attendance</h3>
+    <div className="daily-chart-content">
+      <select
+        className="date-select"
+        onChange={(e) => handleDateSelect(e.target.value)}
+        value={selectedDate}
+      >
+        <option value="">Select a Date</option>
+        {dates.map((date, idx) => (
+          <option key={idx} value={date}>
+            {date}
+          </option>
+        ))}
+      </select>
+      {selectedDate && <Bar data={barChartData} />}
+    </div>
+  </div>
+</div>
+
     </div>
   );
 };
