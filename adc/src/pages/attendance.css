@@ -1,0 +1,282 @@
+/* Overall container for the attendance page */
+.attendance-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Add consistent spacing between elements */
+  margin: 40px auto; /* Center the container horizontally */
+  padding: 20px; /* Ensure consistent inner spacing */
+  max-width: 1200px; /* Set a maximum width for better responsiveness */
+  background-color: #f7f9fc; /* Subtle light background for contrast */
+  border-radius: 8px; /* Rounded corners for a modern look */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  box-sizing: border-box; /* Include padding and border in total width/height */
+}
+
+/* Title styling */
+h1 {
+  font-size: 2rem; /* Large font size for the title */
+  font-weight: bold;
+  color: #333; /* Neutral dark color for text */
+  text-align: center;
+  margin: 0; /* Remove default margins */
+  padding: 10px 20px; /* Add padding inside the header */
+  border-bottom: 2px solid #0056b3; /* Dark blue underline for emphasis */
+  box-sizing: border-box; /* Ensure padding and borders are included in the size */
+  background-color: #eaf2fb; /* Light blue background for header */
+  border-radius: 8px 8px 0 0; /* Rounded corners for a cohesive look */
+}
+
+/* Form container styling */
+.form-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  gap: 20px;
+  padding: 20px;
+  background-color: #fff; /* White background for form */
+  border-radius: 8px; /* Match container style */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for elevation */
+  border: 1px solid #ddd;
+}
+
+/* Individual form fields */
+.form-container label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333; /* Neutral dark color for text */
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-container input,
+.form-container select {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9; /* Light gray for inputs */
+  color: #333; /* Dark text for readability */
+}
+
+.form-container input:focus,
+.form-container select:focus {
+  outline: none;
+  border-color: #0056b3; /* Dark blue border on focus */
+  box-shadow: 0 0 4px rgba(0, 86, 179, 0.5); /* Subtle blue glow effect */
+}
+
+/* Button styling */
+.form-container button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #0056b3; /* Dark blue for buttons */
+  color: #fff; /* White text for buttons */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.form-container button:hover {
+  background-color: #003f7f; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.form-container button:active {
+  background-color: #002e5e; /* Even darker blue on click */
+  transform: translateY(0); /* Reset lift */
+}
+
+/* Button styling for table actions */
+tbody td button {
+  padding: 8px 16px; /* Ensure consistent padding for both buttons */
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #0056b3; /* Dark blue for action buttons */
+  color: #fff; /* White text for action buttons */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100px; /* Fixed width to ensure consistency */
+  text-align: center; /* Center align the text */
+}
+
+tbody td button:hover {
+  background-color: #003f7f; /* Darker blue on hover for table buttons */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+tbody td button:active {
+  background-color: #002e5e; /* Even darker blue on click for table buttons */
+  transform: translateY(0); /* Reset lift */
+}
+
+/* Wrapper for the scrollable table */
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%; /* Adjust to match container's width */
+  -webkit-overflow-scrolling: touch;
+  background-color: #fff; /* Ensure background stays white */
+  border: 1px solid #ddd;
+  border-radius: 8px; /* Match container style */
+  padding: 0px; /* Add spacing around the table */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for elevation */
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* Prevent automatic table width adjustment */
+  font-family: 'Arial', sans-serif; /* Clean, modern font */
+  font-size: 14px; /* Standard font size */
+}
+
+/* Header row */
+thead {
+  display: table; /* Ensure it behaves like a table for alignment */
+  width: 100%;
+}
+
+thead th {
+  text-align: left;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  min-width: 150px; /* Ensure each date column has enough space */
+  position: sticky;
+  top: 0;
+  z-index: 2; /* Keep header on top */
+  text-transform: uppercase; /* Uppercase for headers for emphasis */
+  color: #fff; /* White text for all headers */
+  background-color: #0056b3; /* Dark blue background for headers */
+}
+
+/* Fix for rounded header corners */
+thead th:first-child {
+  border-top-left-radius: 8px; /* Match container styling */
+}
+
+thead th:last-child {
+  border-top-right-radius: 8px; /* Match container styling */
+}
+
+/* Table body */
+tbody {
+  display: table; /* Ensure rows align with headers */
+  width: 100%;
+}
+
+tbody tr {
+  display: table-row;
+}
+
+tbody td {
+  padding: 12px 16px;
+  text-align: left;
+  border: 1px solid #ddd;
+  min-width: 150px; /* Ensure each date column has enough space */
+  background-color: #fff; /* Clean white background for rows */
+  color: #333; /* Neutral dark text color for readability */
+  box-sizing: border-box;
+}
+
+/* Sticky first column (Actions) */
+thead th:first-child,
+tbody td:first-child {
+  position: sticky;
+  left: 0;
+  background-color: #0056b3; /* Dark blue background for actions */
+  color: #fff; /* White text for actions header */
+  z-index: 3; /* Ensure it stays above content */
+  border-right: 1px solid #0056b3; /* Persistent border */
+  box-sizing: border-box;
+  text-align: left; /* Align text properly */
+}
+
+/* Sticky second column (Student Name) */
+thead th:nth-child(2),
+tbody td:nth-child(2) {
+  position: sticky;
+  left: 149px; /* Adjust for the first column width */
+  background-color: #0056b3; /* Dark blue header for Student Name */
+  color: #fff; /* White text for header */
+  z-index: 3; /* Ensure it stays above content */
+  border-right: 1px solid #ddd; /* Persistent border */
+}
+
+tbody td:nth-child(2) {
+  background-color: #fff; /* Keep student name rows white */
+  color: #333; /* Neutral text for readability */
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; /* Add some space above the chart */
+}
+
+.chart-container canvas {
+  max-width: 300px; /* Limit the width */
+  max-height: 300px; /* Limit the height */
+}
+
+.chart-wrapper {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 300px;
+  margin: 0 10px;
+}
+
+/* Wrapper for individual attendance chart and dropdown */
+/* Wrapper for individual attendance chart and dropdown */
+.individual-wrapper {
+  display: flex;
+  flex-direction: column; /* Stack dropdown and stats vertically */
+  align-items: center;
+  gap: 10px; /* Space between dropdown and stats */
+}
+
+/* Dropdown styling */
+.dropdown {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  color: #f7f7f7;
+  width: 150px; /* Set fixed width for dropdown */
+  text-align: center; /* Center align the dropdown text */
+  gap: 0px;
+}
+
+/* Attendance stats underneath dropdown */
+.attendance-stats {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+/* Chart container with individual student adjustments */
+.chart-container.individual {
+  margin-top: 0px; /* Raise the individual chart higher for better alignment */
+}
+
+/* Make the text above the chart black */
+.chart-container h3 {
+  color: #000; /* Set the text color to black */
+  font-weight: bold; /* Ensure the text remains prominent */
+  margin-bottom: 10px; /* Add spacing below the text */
+}
