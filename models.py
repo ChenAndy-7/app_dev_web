@@ -9,6 +9,8 @@ class Lecture(LectureBase, table=True):
 
 class HomeworkBase(SQLModel):
     hwName: str
+    description: str 
+    dueDate: str     
     url: str
 
 class Homework(HomeworkBase, table=True):
