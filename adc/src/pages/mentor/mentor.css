@@ -54,6 +54,10 @@ h3 {
   margin: 0;
 }
 
+.entire {
+  margin-top: 8rem;
+}
+
 .student-section li {
   display: flex;
   justify-content: space-between;

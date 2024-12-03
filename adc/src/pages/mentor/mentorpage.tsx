@@ -98,7 +98,7 @@ const AddGroupForm: React.FC<AddGroupFormProps> = ({ onAddGroup, mentors }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="entire" onSubmit={handleSubmit}>
       <div className="add-group">
         <div className="mentor-section">
           <div className="mentor-select">
