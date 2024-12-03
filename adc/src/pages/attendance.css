@@ -1,22 +1,202 @@
-/* Apply styles to the table */
+/* Overall container for the attendance page */
+.attendance-container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  margin: 40px;
+  background-color: #000000; /* Black background for the entire page */
+  border-radius: 12px;
+  padding: 30px;
+  min-height: 800px;
+  color: #ffffff; /* All text color inside the container is white */
+}
+
+/* Flex container for form and table (form on left, table on right) */
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Styling for the form container */
+.form-container {
+  width: 48%;
+  min-width: 350px;
+  background-color: #ffffff; /* White background for the form */
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: #000000; /* Text color inside the form is black */
+}
+
+/* Styling for the chart container */
+.chart-container {
+  width: 60%;
+  min-width: 400px;
+  background-color: #ffffff; /* White background for the chart */
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+/* Form inputs */
+input[type="text"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #f5f5f5; /* Light gray background for inputs */
+  color: #000000; /* Input text color is black */
+}
+
+/* Set the placeholder text color */
+input[type="text"]::placeholder,
+input[type="date"]::placeholder,
+select::placeholder {
+  color: #000000; /* Placeholder text color is black */
+}
+
+/* Button styles */
+button {
+  background-color: #000000; /* Gray for buttons */
+  color: white;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #000000; /* Lighter gray on hover */
+}
+
+/* Styling for the table */
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 30px;
+  border-radius: 10px;
+  color: #000000; /* Ensure table text is black */
 }
 
-/* Apply styles to table headers */
-th {
-  border: 1px solid black;
-  padding: 8px;
-  text-align: left;
-  background-color: #fffefe;
-  color: #000000;  /* Black text color for headers */
-}
-
-/* Apply styles to table data */
+th,
 td {
-  border: 1px solid rgb(255, 255, 255);
-  padding: 8px;
+  padding: 14px;
   text-align: left;
-  color: #ffffff; /* Green text color for data cells */
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #000000; /* Dark gray for table headers */
+  color: white; /* White text for table headers */
+  font-weight: bold;
+}
+
+td {
+  background-color: #f5f5f5; /* Light gray for table cells */
+  color: #000000; /* Black text inside table cells */
+}
+
+tr:nth-child(even) {
+  background-color: #e1e1e1; /* Slightly darker gray for even rows */
+}
+
+tr:hover {
+  background-color: #d1d1d1; /* Darker gray on hover */
+}
+
+/* For buttons inside the table */
+table button {
+  background-color: #000000; /* Gray for table buttons */
+  padding: 8px 15px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+table button:hover {
+  background-color: #95a5a6; /* Lighter gray on hover */
+}
+
+table .edit-btn {
+  background-color: #27ae60; /* Green for edit buttons */
+}
+
+table .edit-btn:hover {
+  background-color: #2ecc71; /* Lighter green on hover */
+}
+
+table .delete-btn {
+  background-color: #e74c3c; /* Red for delete buttons */
+}
+
+table .delete-btn:hover {
+  background-color: #c0392b; /* Darker red on hover */
+}
+
+/* Ensure spacing between form and table */
+form {
+  margin-bottom: 30px;
+}
+
+/* Styling for labels */
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+  color: #333333; /* Dark gray text for labels */
+}
+
+/* Styling for the attendance status colors */
+td[data-status="Present"] {
+  color: #000000; /* Black for Present */
+  transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+td[data-status="Absent"] {
+  color: #808080; /* Gray for Absent */
+  transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+td[data-status="Late"] {
+  color: #b0b0b0; /* Light gray for Late */
+}
+
+/* Hover Effect for Attendance Status Colors */
+td[data-status="Present"]:hover {
+  color: #000000; /* Lighter black for Present on hover */
+}
+
+td[data-status="Absent"]:hover {
+  color: #000000; /* Lighter gray for Absent on hover */
+}
+
+/* Styling for the Pie chart colors */
+.chart-container .chartjs-render-monitor {
+  background-color: #f5f5f5 !important; /* Ensure chart background is light gray */
+}
+
+/* Pie chart data colors */
+.chartjs-legend li {
+  color: #000000; /* Black color for chart legend text */
+}
+
+/* Pie chart hover color */
+.chart-container canvas:hover {
+  background-color: #d1d1d1 !important; /* Darker gray when hovered */
 }
