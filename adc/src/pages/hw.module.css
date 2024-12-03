@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: 8rem;
-  padding: 3rem;
+  padding: 8rem 3rem 3rem 3rem;
   max-width: 80rem;
   margin: 0 auto;
   transform-style: preserve-3d;
@@ -117,8 +117,8 @@
   text-decoration: none;
   margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
-  border: 1px solid #007bff;
-  border-radius: 5px;
+  border: 0.0625rem solid #007bff;
+  border-radius: 0.3125rem;
   font-size: clamp(0.8rem, 1vw, 1rem);
   white-space: nowrap;
 }
@@ -129,8 +129,8 @@
   text-decoration: none;
   margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
-  border: 1px solid #007bff;
-  border-radius: 5px;
+  border: 0.0625rem solid #007bff;
+  border-radius: 0.3125rem;
 }
 
 .cardDetails a:hover {
@@ -152,21 +152,24 @@
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  width: 60px;
-  height: 60px;
+  width: 3.75rem;
+  height: 3.75rem;
   border-radius: 50%;
   background-color: #007bff;
   color: white;
   border: none;
   font-size: 2rem;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.2s;
-  line-height: 0;
-  transform: translateY(0.75px);
+  padding: 0;
+  line-height: 1;
+  transform: translateY(0);
+  text-align: center;
+  padding-bottom: 0.25rem;
 }
 
 .fab:hover {
@@ -189,7 +192,7 @@
 .modalContent {
   background-color: white;
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: 0.625rem;
   width: 90%;
   max-width: 500px;
 }
@@ -208,13 +211,13 @@
 .formGroup textarea {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 0.0625rem solid #ddd;
+  border-radius: 0.25rem;
   font-size: 1rem;
 }
 
 .formGroup textarea {
-  height: 100px;
+  height: 6.25rem;
   resize: vertical;
 }
 
@@ -227,7 +230,7 @@
 
 .modalButtons button {
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   cursor: pointer;
 }
 
@@ -300,17 +303,17 @@
 }
 
 .description::-webkit-scrollbar {
-  width: 4px;
+  width: 0.25rem;
 }
 
 .description::-webkit-scrollbar-track {
   background: #f1f1f1;
-  border-radius: 2px;
+  border-radius: 0.125rem;
 }
 
 .description::-webkit-scrollbar-thumb {
   background: #888;
-  border-radius: 2px;
+  border-radius: 0.125rem;
 }
 
 .description::-webkit-scrollbar-thumb:hover {
