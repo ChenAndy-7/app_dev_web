@@ -2,6 +2,8 @@ from sqlmodel import SQLModel, Field
 
 class LectureBase(SQLModel):
     slideName: str
+    zoomLink: str
+    zoomPass: str
     url: str
 
 class Lecture(LectureBase, table=True):
@@ -9,6 +11,8 @@ class Lecture(LectureBase, table=True):
 
 class HomeworkBase(SQLModel):
     hwName: str
+    description: str 
+    dueDate: str     
     url: str
 
 class Homework(HomeworkBase, table=True):
