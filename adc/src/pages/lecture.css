@@ -1,0 +1,179 @@
+.leftClicker, 
+.rightClicker { 
+    flex-shrink: 0;  /* Prevent buttons from shrinking */
+    width: 50px; 
+    height: 50px; 
+    transition: .5s; 
+    box-shadow: -2px 2px 0 black; 
+    border-radius: 50%;
+    background-color: transparent;
+    border: 2px solid black;  /* Make border more visible */
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;         /* Bigger arrow size */
+    font-weight: bold; 
+} 
+
+.edit-Button {
+    background-color: orange;
+    color: white;
+    position: absolute;  
+    top: 10px;          
+    left: 10px;         /* Position from left instead of right */
+    width: 25px;        
+    height: 25px;       
+    border-radius: 50%; 
+    padding: 0;         
+    display: flex;      
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;    
+    font-size: 16px;    /* Adjust size of pencil icon */
+}
+
+.link-Button {
+    background-color: #007bff;  /* Nice blue color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 24px;     /* Increased padding */
+    cursor: pointer;
+    font-size: 18px;        /* Bigger text */
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    gap: 5px;
+    margin: 5px 0;
+}
+
+.Title, .link {
+    width: 100%;
+    max-width: 100%;    /* Ensure it never exceeds parent width */
+    padding: 0 10px;    /* Add some padding on the sides */
+    box-sizing: border-box;
+    word-wrap: break-word;
+    text-wrap: wrap;
+    text-align: center;
+}
+
+.slide {
+    
+    border: 2px solid black;
+    box-shadow: -2px 2px 0 black; 
+    padding: 30px 15px; 
+    border-radius: 5px;
+    background-color: #fff;
+    color: black;
+    width: 550px;        /* Fixed width */
+    height: 450px;       /* Fixed height */
+    transition: background-color 0.3s, transform 0.3s;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+    overflow-y: auto;    /* Keep vertical scrolling if content overflows */
+    overflow-x: hidden;  /* Keep horizontal overflow hidden */
+    box-sizing: border-box;
+}
+
+.delete-Button{
+    background-color: #f44336;
+    color: white;
+    position: absolute;  /* Changed from relative to absolute */
+    top: 10px;          /* Position from top */
+    right: 10px;        /* Position from right */
+    width: 25px;        /* Set specific width */
+    height: 25px;       /* Set specific height */
+    border-radius: 50%; /* Make it circular */
+    padding: 0;         /* Remove padding */
+    display: flex;      /* Center the X */
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;    
+}
+
+.section1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    gap: 20px;
+}
+
+.section2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;  /* Optional: adds some spacing */
+}
+
+/* Optional: If you want to style the button itself */
+.section2 button {
+    background: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+/* Optional: If you want to control the image size */
+#addImage {
+    width: 50px;  /* Adjust size as needed */
+    height: auto;
+}
+
+/*popUp css*/
+.popup{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.2); /* Semi-transparent black background */
+    color:black;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popInner{
+    position: relative;
+    padding: 32px;
+    padding-bottom: 70px;  /* Add extra padding at bottom for the button */
+    width: 100%;
+    max-width: 640px;
+    background-color: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.close-Button {
+    position: absolute;  /* Changed from fixed to absolute */
+    top: 16px;          /* Add some padding from the top */
+    right: 16px;        /* Add some padding from the right */
+    cursor: pointer;    /* Optional: adds a pointer cursor on hover */
+}
+
+.add-Button{
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px;
+    cursor: pointer;
+}
+
+.popup-txt{
+    display: flex;
+    flex-direction: column;
+    left: 16px;
+    gap: 1rem
+}
+
