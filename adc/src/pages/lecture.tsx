@@ -64,23 +64,41 @@ function Lecture() {
     if (error) return <div>Error: {error}</div>;
 
     async function createNewLecture() {
-        await fetch('http://127.0.0.1:8000/lecture/new', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ // Takes your javascript object and it turns it into a string
-            slideName: slideNameInput.slideName,
-            zoomLink: zoomLinkInput.zoomLink,
-            zoomPass: zoomPassInput.zoomPass,
-            url: urlInput.url
-          })
-        })
-        setSlideNameInput({slideName:""})
-        setsUrlInput({url:""})
-        setAddingLecture(false)
-        await fetchLectures();
+            // Check if any required field is empty
+            if (!slideNameInput.slideName || !urlInput.url || !zoomLinkInput.zoomLink || !zoomPassInput.zoomPass) {
+                alert("Please fill in all fields");  // Simple alert for error
+                return;  // Stop the function if validation fails
+            }
+        
+            try {
+                const response = await fetch('http://127.0.0.1:8000/lecture/new', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        slideName: slideNameInput.slideName,
+                        zoomLink: zoomLinkInput.zoomLink,
+                        zoomPass: zoomPassInput.zoomPass,
+                        url: urlInput.url
+                    })
+                });
+        
+                if (!response.ok) {
+                    throw new Error('Failed to create lecture');
+                }
+        
+                // Clear states only if creation was successful
+                setSlideNameInput({slideName: ""});
+                setsUrlInput({url: ""});
+                setZoomLinkInput({zoomLink: ""});
+                setsZoomPassInput({zoomPass: ""});
+                setButtonPopup(false);
+                await fetchLectures();
+            } catch (error) {
+                alert("Error creating lecture: " + error);
+            }
     }
     
     async function deleteLecture(id: number) {
@@ -125,6 +143,27 @@ function Lecture() {
 
     }
 
+    const handleClick = (newTab: string) => {
+        // The link you want to open
+        const url = newTab;
+        // Opens the URL in a new tab
+        window.open(url, "_blank", "noopener,noreferrer");
+    };
+
+    const openEditPopup = () => {
+        const currentLecture = lectures[currentIndex];
+        setSlideNameInput({slideName: currentLecture.slideName});
+        setsUrlInput({url: currentLecture.url});
+        setZoomLinkInput({zoomLink: currentLecture.zoomLink});
+        setsZoomPassInput({zoomPass: currentLecture.zoomPass});
+        setEditPopup(true);
+    }
+
+    async function addHelper(){
+        setButtonPopup(false)
+        createNewLecture()
+    }
+
     return (
         <div className = "lecture-container">
 
@@ -134,10 +173,10 @@ function Lecture() {
                 <div className = "slide">
                     <button className = "delete-Button" onClick = {() => deleteHelper()}>X</button>
                     <h1 className = "Title">{lectures[currentIndex].slideName}</h1>
-                    <a href={lectures[currentIndex].url} className = "link">{lectures[currentIndex].url}</a>
-                    <h3>{lectures[currentIndex].zoomLink}</h3>
-                    <h3>{lectures[currentIndex].zoomPass}</h3>
-                    <button onClick = {() => setEditPopup(true)}>Edit</button>
+                    <button className = "link-Button" onClick={() => handleClick(lectures[currentIndex].url)}>Slides Link</button>
+                    <button className = "link-Button" onClick={() => handleClick(lectures[currentIndex].zoomLink)}>Zoom Link</button>
+                    <h3>Zoom Password: {lectures[currentIndex].zoomPass}</h3>
+                    <button onClick = {() => openEditPopup()}  className = "edit-Button">✎</button>
                 </div>
                 <button className = "leftClicker" onClick = {() => indexUp()}>&#62;</button>
             </div>
@@ -149,30 +188,30 @@ function Lecture() {
             <Popup trigger = {buttonPopup}
             setTrigger={setButtonPopup}>
                 <h3 className = "popup-txt">Title:</h3>
-                <input type="text" id = "new-Title" placeholder="Enter Title..." value = {slideNameInput.slideName} onChange = {(e) => setSlideNameInput({slideName: e.target.value})}/>
+                <input type="text" id = "new-Title" placeholder="Enter Title..." /*value = {slideNameInput.slideName}*/ onChange = {(e) => setSlideNameInput({slideName: e.target.value})}/>
 
 
                 <h3 className = "popup-txt">Link:</h3>
-                <input type="text" id = "new-Link" placeholder="Enter Link..." value = {urlInput.url} onChange = {(e) => setsUrlInput({url: e.target.value})}/>
+                <input type="text" id = "new-Link" placeholder="Enter Link..." /*value = {urlInput.url}*/ onChange = {(e) => setsUrlInput({url: e.target.value})}/>
 
                 <h3 className = "popup-txt">Zoom Link:</h3>
-                <input type="text" name="" id="new-Zoom-Link" placeholder="Enter Zoom Link..." value = {zoomLinkInput.zoomLink} onChange = {(e) => setZoomLinkInput({zoomLink: e.target.value})}/>
+                <input type="text" name="" id="new-Zoom-Link" placeholder="Enter Zoom Link..." /*value = {zoomLinkInput.zoomLink}*/ onChange = {(e) => setZoomLinkInput({zoomLink: e.target.value})}/>
 
                 <h3 className = "popup-txt">Zoom Password:</h3>
-                <input type="text" name="" id="new-Zoom-Pass" placeholder="Enter Zoom Password..." value = {zoomPassInput.zoomPass} onChange = {(e) => setsZoomPassInput({zoomPass: e.target.value})}/>
+                <input type="text" name="" id="new-Zoom-Pass" placeholder="Enter Zoom Password..." /*value = {zoomPassInput.zoomPass}*/ onChange = {(e) => setsZoomPassInput({zoomPass: e.target.value})}/>
 
-                <button className = "add-Button" onClick={() => createNewLecture()}>Add</button>
+                <button className = "add-Button" onClick={() => addHelper()}>Add</button>
             </Popup>
 
             {/*popup for changing lecture slide data*/}
             <Popup trigger = {editPopup}
             setTrigger={setEditPopup}>
                 <h3 className = "popup-txt">Title:</h3>
-                <input type="text" id = "new-Title" placeholder = {lectures[currentIndex].slideName} value = {slideNameInput.slideName} onChange = {(e) => setSlideNameInput({slideName: e.target.value})}/>
+                <input type="text" id = "new-Title" placeholder= {lectures[currentIndex].slideName} value = {slideNameInput.slideName} onChange = {(e) => setSlideNameInput({slideName: e.target.value})}/>
 
 
                 <h3 className = "popup-txt">Link:</h3>
-                <input type="text" id = "new-Link" placeholder= {lectures[currentIndex].url} value = {urlInput.url} onChange = {(e) => setsUrlInput({url: e.target.value})}/>
+                <input type="text" id = "new-Link"  placeholder= {lectures[currentIndex].url} value = {urlInput.url} onChange = {(e) => setsUrlInput({url: e.target.value})}/>
 
                 <h3 className = "popup-txt">Zoom Link:</h3>
                 <input type="text" name="" id="new-Zoom-Link" placeholder= {lectures[currentIndex].zoomLink} value = {zoomLinkInput.zoomLink} onChange = {(e) => setZoomLinkInput({zoomLink: e.target.value})}/>
