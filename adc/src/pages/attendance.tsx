@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './attendance.css';
-import { Pie } from 'react-chartjs-2'; // Importing Pie chart from Chart.js
-
-// Import necessary Chart.js components
+import { Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   Title,
@@ -13,31 +11,30 @@ import {
   LinearScale,
 } from 'chart.js';
 
-// Register Chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
 
 const Attendance = () => {
   const [attendanceData, setAttendanceData] = useState<any[]>([]);
   const [newAttendance, setNewAttendance] = useState({
     student_name: '',
-    class_name: '',
     attendance_date: '',
-    status: 'Present', // default status
-    attendance_id: null, // This will be null when adding a new record
+    status: 'Present',
+    attendance_id: null,
   });
 
-  const [attendanceStats, setAttendanceStats] = useState({
-    present: 0,
-    absent: 0,
-  });
+  const [attendanceStats, setAttendanceStats] = useState({ present: 0, absent: 0 });
+  const [studentStats, setStudentStats] = useState({ present: 0, absent: 0 });
 
-  // Fetch attendance data on component mount
+  const [dates, setDates] = useState<string[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<string>('');
+
   useEffect(() => {
-    fetch('http://localhost:5175/api/attendance') // This is the correct API endpoint
+    fetch('http://localhost:5175/api/attendance')
       .then((response) => response.json())
       .then((data) => {
         setAttendanceData(data);
-        updateAttendanceStats(data);  // Update attendance stats
+        updateAttendanceStats(data);
+        generateDates(data);
       })
       .catch((error) => console.error('Error fetching attendance data:', error));
   }, []);
@@ -45,10 +42,31 @@ const Attendance = () => {
   const updateAttendanceStats = (data: any[]) => {
     const presentCount = data.filter((record) => record.status === 'Present').length;
     const absentCount = data.filter((record) => record.status === 'Absent').length;
-    setAttendanceStats({
-      present: presentCount,
-      absent: absentCount,
+    setAttendanceStats({ present: presentCount, absent: absentCount });
+  };
+
+  const updateStudentStats = (studentName: string) => {
+    const studentRecords = attendanceData.filter(
+      (record) => record.student_name === studentName
+    );
+    const presentCount = studentRecords.filter((record) => record.status === 'Present').length;
+    const absentCount = studentRecords.filter((record) => record.status === 'Absent').length;
+    setStudentStats({ present: presentCount, absent: absentCount });
+  };
+
+  const generateDates = (data: any[]) => {
+    const dateSet = new Set<string>();
+    data.forEach((record) => {
+      const formattedDate = new Date(record.attendance_date).toLocaleDateString('en-US');
+      dateSet.add(formattedDate);
     });
+    setDates([...dateSet].sort((a, b) => new Date(a).getTime() - new Date(b).getTime()));
+  };
+
+  const handleStudentSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedName = e.target.value;
+    setSelectedStudent(selectedName);
+    updateStudentStats(selectedName);
   };
 
   const pieChartData = {
@@ -56,116 +74,37 @@ const Attendance = () => {
     datasets: [
       {
         data: [attendanceStats.present, attendanceStats.absent],
-        backgroundColor: ['#000000', '#808080'], // Black for Present, Gray for Absent
-        hoverBackgroundColor: ['#333333', '#b0b0b0'], // Lighter black for Present, Light gray for Absent on hover
+        backgroundColor: ['#4caf50', '#f44336'],
+        hoverBackgroundColor: ['#66bb6a', '#e57373'],
       },
     ],
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setNewAttendance((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();  // Prevent default form submission
-
-    const url = newAttendance.attendance_id
-      ? `http://localhost:5175/api/attendance/${newAttendance.attendance_id}` // PUT for edit
-      : 'http://localhost:5175/api/attendance'; // POST for add
-
-    const method = newAttendance.attendance_id ? 'PUT' : 'POST'; // Determine method based on whether it's an update or new
-
-    fetch(url, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json',
+  const studentPieChartData = {
+    labels: ['Present', 'Absent'],
+    datasets: [
+      {
+        data: [studentStats.present, studentStats.absent],
+        backgroundColor: ['#2196f3', '#ff9800'], // Blue for Present, Orange for Absent
+        hoverBackgroundColor: ['#64b5f6', '#ffb74d'],
       },
-      body: JSON.stringify(newAttendance), // Ensure 'newAttendance' is being used correctly here
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        updateAttendanceStats([...attendanceData, data]);
-
-        if (newAttendance.attendance_id) {
-          setAttendanceData((prevData) =>
-            prevData.map((record) =>
-              record.attendance_id === newAttendance.attendance_id ? data : record
-            )
-          );
-        } else {
-          setAttendanceData((prevData) => [...prevData, data]);
-        }
-
-        setNewAttendance({
-          student_name: '',
-          class_name: '',
-          attendance_date: '',
-          status: 'Present',
-          attendance_id: null,
-        });
-      })
-      .catch((error) => console.error('Error saving attendance data:', error));
-  };
-
-  const handleDelete = (attendance_id: number) => {
-    fetch(`http://localhost:5175/api/attendance/${attendance_id}`, {
-      method: 'DELETE',
-    })
-      .then(() => {
-        setAttendanceData((prevData) =>
-          prevData.filter((record) => record.attendance_id !== attendance_id)
-        );
-        console.log('Attendance record deleted');
-      })
-      .catch((error) => console.error('Error deleting attendance record:', error));
-  };
-
-  const handleEdit = (record: any) => {
-    setNewAttendance({
-      student_name: record.student_name,
-      class_name: record.class_name,
-      attendance_date: record.attendance_date,
-      status: record.status,
-      attendance_id: record.attendance_id,
-    });
-  };
-
-  // Helper function to format the date
-  const formatDate = (date: string) => {
-    const d = new Date(date);
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    return d.toLocaleDateString('en-US', options); // This will format as MM/DD/YYYY
+    ],
   };
 
   return (
     <div className="attendance-container">
       <h1>Attendance</h1>
-
-      {/* Flex container for form and table */}
       <div className="flex-container">
-        {/* Form to add new attendance record */}
-        <form onSubmit={handleSubmit} className="form-container">
+        <form className="form-container">
           <div>
             <label>Student Name:</label>
             <input
               type="text"
               name="student_name"
               value={newAttendance.student_name}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Class Name:</label>
-            <input
-              type="text"
-              name="class_name"
-              value={newAttendance.class_name}
-              onChange={handleInputChange}
+              onChange={(e) =>
+                setNewAttendance((prev) => ({ ...prev, student_name: e.target.value }))
+              }
               required
             />
           </div>
@@ -175,7 +114,9 @@ const Attendance = () => {
               type="date"
               name="attendance_date"
               value={newAttendance.attendance_date}
-              onChange={handleInputChange}
+              onChange={(e) =>
+                setNewAttendance((prev) => ({ ...prev, attendance_date: e.target.value }))
+              }
               required
             />
           </div>
@@ -184,65 +125,90 @@ const Attendance = () => {
             <select
               name="status"
               value={newAttendance.status}
-              onChange={handleInputChange}
+              onChange={(e) =>
+                setNewAttendance((prev) => ({ ...prev, status: e.target.value }))
+              }
             >
               <option value="Present">Present</option>
               <option value="Absent">Absent</option>
               <option value="Late">Late</option>
             </select>
           </div>
-          <button type="submit">{newAttendance.attendance_id ? 'Update Attendance' : 'Add Attendance'}</button>
+          <button type="submit">Add Attendance</button>
         </form>
       </div>
 
-      {/* Table to display the attendance records */}
-      <table>
-        <thead>
-          <tr>
-            <th>Student Name</th>
-            <th>Class Name</th>
-            <th>Attendance Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {attendanceData.length > 0 ? (
-            attendanceData.map((record, index) => (
-              <tr key={index}>
-                <td>{record.student_name}</td>
-                <td>{record.class_name}</td>
-                <td>{formatDate(record.attendance_date)}</td>
-                <td>{record.status}</td>
-                <td>
-                  <button onClick={() => handleEdit(record)}>Edit</button>
-                  <button onClick={() => handleDelete(record.attendance_id)}>Delete</button>
-                </td>
-              </tr>
-            ))
-          ) : (
+      <div className="table-wrapper">
+        <table>
+          <thead>
             <tr>
-              <td colSpan={5} style={{ textAlign: 'center' }}>
-                No attendance records available.
-              </td>
+              <th>Actions</th>
+              <th>Student Name</th>
+              {dates.map((date, index) => (
+                <th key={index}>{date}</th>
+              ))}
             </tr>
-          )}
-        </tbody>
-      </table>
-
-      {/* Pie chart for attendance */}
-      <div className="chart-container">
-        <Pie
-          data={pieChartData}
-          options={{
-            responsive: true,
-            plugins: {
-              legend: { position: 'top' },
-            },
-          }}
-        />
+          </thead>
+          <tbody>
+            {attendanceData.map((record, index) => (
+              <tr key={index}>
+                <td>
+                  <button>Edit</button>
+                  <button>Delete</button>
+                </td>
+                <td>{record.student_name}</td>
+                {dates.map((date, idx) => (
+                  <td key={idx}>
+                    {record.attendance_date === date ? record.status : 'N/A'}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+
+      <div className="chart-wrapper">
+  {/* Overall attendance chart */}
+  <div className="chart-container">
+    <h3>Overall Attendance</h3>
+    <Pie data={pieChartData} />
+  </div>
+
+{/* Individual student attendance chart with dropdown */}
+<div className="chart-container individual">
+  <div className="individual-wrapper">
+    <div>
+      <h3>Individual Attendance</h3>
+      {selectedStudent && <Pie data={studentPieChartData} />}
     </div>
+    <select
+      value={selectedStudent}
+      onChange={handleStudentSelect}
+      className="dropdown"
+    >
+      <option value="">Select a Student</option>
+      {[...new Set(attendanceData.map((record) => record.student_name))].map(
+        (student, idx) => (
+          <option key={idx} value={student}>
+            {student}
+          </option>
+        )
+      )}
+    </select>
+    {/* Display present and absent stats under the dropdown */}
+    {selectedStudent && (
+      <div className="attendance-stats">
+        <p>Present: {studentStats.present}</p>
+        <p>Absent: {studentStats.absent}</p>
+      </div>
+    )}
+  </div>
+</div>
+</div>
+
+
+      </div>
   );
 };
 
