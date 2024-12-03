@@ -152,7 +152,7 @@ function Slack() {
         <div className="slack">
             <div className="later-messages-container">
                 <div className="message-feed">
-                    <h1>Saved for Later Messages</h1>
+                    <h1 className="title">Saved for Later Messages</h1>
 
                     {laterMessages.length > 0 ? (laterMessages.map((message) => (
                         <div key={message.id} className="message-container">
@@ -174,7 +174,7 @@ function Slack() {
                 </div>
             </div>
             <div className="slack-messages-container">
-                <h1>Active Messages</h1>
+                <h1 className="title">Active Messages</h1>
                 <div className="filter-container">
                     <label className="filter">Filter by Type:
                         <select

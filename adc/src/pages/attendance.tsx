@@ -93,7 +93,7 @@ const Attendance = () => {
 
   return (
     <div className="attendance-container">
-      <h1>Attendance</h1>
+      <h1 id="title">Attendance</h1>
       <div className="flex-container">
         <form className="form-container">
           <div>
