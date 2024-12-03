@@ -4,8 +4,9 @@ import { Link, useMatch, useResolvedPath } from "react-router-dom"
 const Navbar = () => {
     return ( 
       <nav className="nav">
-      <Link to="/" className="site-title">
-        App Dev
+      <Link to="/" className="site-title"> 
+        <img id = "logo"src="https://www.cs.umd.edu/sites/default/files/images/article/2024/logo_0.png" alt="logo" />
+         App Dev
       </Link>
       <ul>
         <CustomLink to="/attendance">Attendance</CustomLink>

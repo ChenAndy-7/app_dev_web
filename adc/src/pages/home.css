@@ -1,5 +1,6 @@
 body {
-    background-color: black;
+    background-color: rgb(128, 128, 128);
+        background: radial-gradient(circle, #4468b5, #162a7d); /* Circular gradient */
 }
 
 #title {
