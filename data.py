@@ -1,107 +1,99 @@
 import sqlite3
-import os
 
-# def init_db():
-    # Check if database already exists
-    db_exists = os.path.exists('data.db')
-    
-    # connect to the SQLite database
-    con = sqlite3.connect('data.db')
-    
-    # create a cursor object using the connection
-    cur = con.cursor()
+# Connect to the SQLite database
+con = sqlite3.connect('data.db')
 
-    # Only create and populate tables if database doesn't exist
-    if not db_exists:
-        lecture = [
-            (1, "Intro", "https://docs.google.com/presentation/d/1VP9mrEZJZ9ALk2dBwadcGkWBg5twjUbM6VFZ7Fn3Vkk/edit?usp=sharing"),
-            (2, "Git,HTML,CSS", "https://docs.google.com/presentation/d/1wO047LhrT73QIcC5WzFhzGOtYhxap3aPq-nYbjmOSKk/edit?usp=sharing"),
-            (3, "JavaScript", "https://docs.google.com/presentation/d/1RWvO8TQ_ueJyBdSHfZ6oNvq9E6J3rYovItbX_Q-r-44/edit?usp=sharing"),
-            (4, "TypeScript", "https://docs.google.com/presentation/d/14ooPTPyM4QZPWMBq2sg4NypMQZAHQ4rY5n6CUn6l7zI/edit?usp=sharing"),
-            (5, "React", "https://docs.google.com/presentation/d/1YzEswdGs5zqZMaK8zPCaJl8PiiFFOYDnz2QVHLDAxak/edit?usp=sharing"),
-            (6, "State in React", "https://docs.google.com/presentation/d/1GTiIFoT1EDLZ0Y9SC6G1f9c1-YZoMM-NMLOC8-0_-lI/edit?usp=sharing")
-        ]
+# Create a cursor object using the connection
+cur = con.cursor()
 
-        homework = [
-            (1, "HW1", "Description for HW1", "2023-10-01", "https://forms.gle/MQejHVuzuVzj3uGE7"),
-            (2, "HW2", "Description for HW2", "2023-10-08", "https://forms.gle/6XVNWAyVc5ADfZxz9"),
-            (3, "HW3", "Description for HW3", "2023-10-15", "https://forms.gle/fhbZwTntgESBEY6j8"),
-            (4, "HW4", "Description for HW4", "2023-10-22", "https://forms.gle/2bRc93qwD8nwJafu5"),
-            (5, "HW5", "Description for HW5", "2023-10-29", "https://forms.gle/65u4Er1kCaEMJioa7")
-        ]
+lecture = [
+    (1, "Intro", "https://docs.google.com/presentation/d/1VP9mrEZJZ9ALk2dBwadcGkWBg5twjUbM6VFZ7Fn3Vkk/edit?usp=sharing"),
+    (2, "Git,HTML,CSS", "https://docs.google.com/presentation/d/1wO047LhrT73QIcC5WzFhzGOtYhxap3aPq-nYbjmOSKk/edit?usp=sharing"),
+    (3, "JavaScript", "https://docs.google.com/presentation/d/1RWvO8TQ_ueJyBdSHfZ6oNvq9E6J3rYovItbX_Q-r-44/edit?usp=sharing"),
+    (4, "TypeScript", "https://docs.google.com/presentation/d/14ooPTPyM4QZPWMBq2sg4NypMQZAHQ4rY5n6CUn6l7zI/edit?usp=sharing"),
+    (5, "React", "https://docs.google.com/presentation/d/1YzEswdGs5zqZMaK8zPCaJl8PiiFFOYDnz2QVHLDAxak/edit?usp=sharing"),
+    (6, "State in React", "https://docs.google.com/presentation/d/1GTiIFoT1EDLZ0Y9SC6G1f9c1-YZoMM-NMLOC8-0_-lI/edit?usp=sharing")
+]
 
-        slack = []
-        attendance = []
-        mentors = []
+homework = [
+    (1, "Personal Website", "Make a personal website using HTML and CSS", "2024-02-01", "https://forms.gle/MQejHVuzuVzj3uGE7"),
+    (2, "Flexbox, Git: push and pull", "Complete levels and use flexbox in your personal website", "2024-02-08", "https://forms.gle/6XVNWAyVc5ADfZxz9"),
+    (3, "Notecard App", "starter code in github, see slack for details", "2024-02-15", "https://forms.gle/fhbZwTntgESBEY6j8"),
+    (4, "Memory Match Game", "starter code in github, see slack for details", "2024-02-22", "https://forms.gle/2bRc93qwD8nwJafu5"),
+    (5, "React Reading", "learn about React concepts", "2024-02-29", "https://forms.gle/65u4Er1kCaEMJioa7"),
+    (6, "Twitter Clone + Advanced React Reading", "make twitter clone, starter code in github, see slack for details. Learn about advanced React concepts", "2024-03-06", "https://forms.gle/8SXRVwGs4q2MQHJD6")
+]
 
-        # Define SQL for creating tables
-        create_lecture_table = """
-        CREATE TABLE IF NOT EXISTS lecture (
-            id INTEGER PRIMARY KEY,
-            slideName TEXT NOT NULL,
-            url TEXT NOT NULL
-        );
-        """
+slack = []
+attendance = []
+mentors = []
 
-        create_homework_table = """
-        CREATE TABLE IF NOT EXISTS homework (
-            id INTEGER PRIMARY KEY,
-            hwName TEXT NOT NULL,
-            description TEXT NOT NULL,
-            dueDate TEXT NOT NULL,
-            url TEXT NOT NULL
-        );
-        """
+# Define SQL for creating tables
+create_lecture_table = """
+CREATE TABLE IF NOT EXISTS lecture (
+    id INTEGER PRIMARY KEY,
+    slideName TEXT NOT NULL,
+    url TEXT NOT NULL
+);
+"""
 
-        create_slack_table = """
-        CREATE TABLE IF NOT EXISTS slack (
-            id INTEGER PRIMARY KEY,
-            username TEXT NOT NULL,
-            content TEXT NOT NULL,
-            type TEXT NOT NULL,
-            isImportant INTEGER NOT NULL,
-            forLater INTEGER NOT NULL,
-            timestamp TEXT NOT NULL
-        );
-        """
+create_homework_table = """
+CREATE TABLE IF NOT EXISTS homework (
+    id INTEGER PRIMARY KEY,
+    hwName TEXT NOT NULL,
+    description TEXT NOT NULL,
+    dueDate TEXT NOT NULL,
+    url TEXT NOT NULL
+);
+"""
 
-        create_attendance_table = """
-        CREATE TABLE IF NOT EXISTS attendance (
-            id INTEGER PRIMARY KEY,
-            studentName TEXT NOT NULL,
-            attendance TEXT NOT NULL,
-            date TEXT NOT NULL
-        );
-        """
+create_slack_table = """
+CREATE TABLE IF NOT EXISTS slack (
+    id INTEGER PRIMARY KEY,
+    username TEXT NOT NULL,
+    content TEXT NOT NULL,
+    type TEXT NOT NULL,
+    isImportant INTEGER NOT NULL,
+    forLater INTEGER NOT NULL,
+    timestamp TEXT NOT NULL
+);
+"""
 
-        create_mentors_table = """
-        CREATE TABLE IF NOT EXISTS mentors (
-            id INTEGER PRIMARY KEY,
-            mentorName TEXT NOT NULL,
-            mentorEmail TEXT NOT NULL,
-            mentorPhone TEXT NOT NULL,
-            mentorSlack TEXT NOT NULL
-        );
-        """
+create_attendance_table = """
+CREATE TABLE IF NOT EXISTS attendance (
+    id INTEGER PRIMARY KEY,
+    studentName TEXT NOT NULL,
+    attendance TEXT NOT NULL,
+    date TEXT NOT NULL
+);
+"""
 
-        # Execute table creation
-        cur.execute(create_lecture_table)
-        cur.execute(create_homework_table)
-        cur.execute(create_slack_table)
-        cur.execute(create_attendance_table)
-        cur.execute(create_mentors_table)
+create_mentors_table = """
+CREATE TABLE IF NOT EXISTS mentors (
+    id INTEGER PRIMARY KEY,
+    mentorName TEXT NOT NULL,
+    mentorEmail TEXT NOT NULL,
+    mentorPhone TEXT NOT NULL,
+    mentorSlack TEXT NOT NULL
+);
+"""
 
-        # Only insert initial data if database was just created
-        cur.executemany("INSERT INTO lecture VALUES (?, ?, ?)", lecture)
-        cur.executemany("INSERT INTO homework VALUES (?, ?, ?, ?, ?)", homework)
-        cur.executemany("INSERT INTO slack VALUES (?, ?, ?, ?, ?, ?, ?)", slack)
-        cur.executemany("INSERT INTO attendance VALUES (?, ?, ?, ?)", attendance)
-        cur.executemany("INSERT INTO mentors VALUES (?, ?, ?, ?, ?)", mentors)
+# Execute table creation
+cur.execute(create_lecture_table)
+cur.execute(create_homework_table)
+cur.execute(create_slack_table)
+cur.execute(create_attendance_table)
+cur.execute(create_mentors_table)
 
-        con.commit()
-        print("Database initialized with initial data")
-    else:
-        print("Database already exists, skipping initialization")
+# Only insert initial data if database was just created
+cur.executemany("INSERT INTO lecture VALUES (?, ?, ?)", lecture)
+cur.executemany("INSERT INTO homework VALUES (?, ?, ?, ?, ?)", homework)
+cur.executemany("INSERT INTO slack VALUES (?, ?, ?, ?, ?, ?, ?)", slack)
+cur.executemany("INSERT INTO attendance VALUES (?, ?, ?, ?)", attendance)
+cur.executemany("INSERT INTO mentors VALUES (?, ?, ?, ?, ?)", mentors)
 
-    con.close()
+con.commit()
+print("Database initialized with initial data")
+
+con.close()
 
