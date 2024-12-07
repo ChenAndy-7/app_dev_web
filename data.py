@@ -27,6 +27,7 @@ homework = [
 slack = []
 attendance = []
 mentors = []
+groups = []
 
 # Define SQL for creating tables
 create_lecture_table = """
@@ -80,21 +81,31 @@ CREATE TABLE IF NOT EXISTS mentors (
 );
 """
 
+create_groups_table = """
+CREATE TABLE IF NOT EXISTS groups (
+    id INTEGER PRIMARY KEY,
+    mentor1 TEXT NOT NULL,
+    mentor2 TEXT NOT NULL,
+    students TEXT NOT NULL
+);
+
+"""
+
 # Execute table creation
 cur.execute(create_lecture_table)
 cur.execute(create_homework_table)
 cur.execute(create_slack_table)
 cur.execute(create_attendance_table)
 cur.execute(create_mentors_table)
+cur.execute(create_groups_table)
 
 cur.executemany("INSERT INTO lecture VALUES (?, ?, ?, ?, ?)", lecture)
 cur.executemany("INSERT INTO homework VALUES (?, ?, ?, ?, ?)", homework)
 cur.executemany("INSERT INTO slack VALUES (?, ?, ?, ?, ?, ?, ?)", slack)
 cur.executemany("INSERT INTO attendance VALUES (?, ?, ?, ?)", attendance)
 cur.executemany("INSERT INTO mentors VALUES (?, ?, ?, ?, ?)", mentors)
+cur.executemany("INSERT INTO groups VALUES (?, ?, ?, ?)", groups)
 
 con.commit()
-print("Database initialized with initial data")
 
 con.close()
-
