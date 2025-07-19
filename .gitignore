@@ -1,2 +1,3 @@
-# ... existing gitignore contents ...
+venv/
 *.db
+

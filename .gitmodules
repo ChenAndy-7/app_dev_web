@@ -1,3 +1,0 @@
-[submodule "adc/adc-backend"]
-	path = adc/adc-backend
-	url = https://github.com/ChenAndy-7/adc-backend.git
