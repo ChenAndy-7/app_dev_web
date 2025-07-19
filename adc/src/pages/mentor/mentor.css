@@ -212,3 +212,8 @@ h3 {
 .student-section li:hover {
   background-color: #e6e6e6;
 }
+
+
+.selected-mentors {
+  color: black;
+}

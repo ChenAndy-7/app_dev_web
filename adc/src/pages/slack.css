@@ -322,3 +322,7 @@
   .close:hover {
       color: #000;
   }
+
+  .slack {
+    color: black;
+  }
