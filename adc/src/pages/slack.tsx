@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import './slack.css';
+import { API_URL } from '../config';
 
 interface Message {
     id: number;
@@ -31,7 +32,7 @@ function Slack() {
 
     async function fetchMessages() {
         try {
-            const response = await fetch("http://127.0.0.1:8000/slack");
+            const response = await fetch(`${API_URL}/slack`);
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
@@ -85,8 +86,8 @@ function Slack() {
         const isEdit = formData.id !== undefined;
 
         const url = isEdit
-            ? `http://127.0.0.1:8000/slack/${formData.id}` // Use the message ID for the PUT request
-            : "http://127.0.0.1:8000/slack/new";
+            ? `${API_URL}/slack/${formData.id}`
+            : `${API_URL}/slack/new`;
         const method = isEdit ? "PUT" : "POST";
 
         try {
@@ -139,7 +140,7 @@ function Slack() {
     // Delete a message
     async function deleteMessage(id: number) {
         try {
-            await fetch(`http://127.0.0.1:8000/slack/${id}`, {
+            await fetch(`${API_URL}/slack/${id}`, {
                 method: "DELETE",
             });
             await fetchMessages();

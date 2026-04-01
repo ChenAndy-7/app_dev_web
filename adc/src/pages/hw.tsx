@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './hw.module.css';
+import { API_URL } from '../config';
 
 interface Homework {
   id: number;
@@ -29,7 +30,7 @@ const HW: React.FC = () => {
 
   const fetchHomework = async () => {
     try {
-      const response = await fetch('http://localhost:8000/homework');
+      const response = await fetch(`${API_URL}/homework`);
       if (!response.ok) throw new Error('Failed to fetch homework');
       const data = await response.json();
       setHomeworks(data);
@@ -53,7 +54,7 @@ const HW: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8000/homework', {
+      const response = await fetch(`${API_URL}/homework`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +82,7 @@ const HW: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:8000/homework/${id}`, {
+      const response = await fetch(`${API_URL}/homework/${id}`, {
         method: 'DELETE',
       });
 
@@ -107,7 +108,7 @@ const HW: React.FC = () => {
     if (!editingHomework) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/homework/${editingHomework.id}`, {
+      const response = await fetch(`${API_URL}/homework/${editingHomework.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

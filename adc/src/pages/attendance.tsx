@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './attendance.css';
+import { API_URL } from '../config';
 import { Pie, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -28,12 +29,12 @@ const Attendance = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const attendanceResponse = await fetch('http://localhost:8000/attendance');
+        const attendanceResponse = await fetch(`${API_URL}/attendance`);
         const attendanceData = await attendanceResponse.json();
         setAttendanceData(attendanceData);
         updateAttendanceStats(attendanceData);
 
-        const studentsResponse = await fetch('http://localhost:8000/students');
+        const studentsResponse = await fetch(`${API_URL}/students`);
         const studentsData = await studentsResponse.json();
         setStudents(studentsData);
 
@@ -48,7 +49,7 @@ const Attendance = () => {
 
   // Fetch dates from the server
   const fetchDates = () => {
-    fetch('http://localhost:8000/dates')
+    fetch(`${API_URL}/dates`)
       .then((response) => response.json())
       .then((data) => {
         setDates(data);
@@ -67,7 +68,7 @@ const Attendance = () => {
     if (!newStudent.trim()) return;
 
     // POST request to add a new student
-    fetch('http://localhost:8000/students', {
+    fetch(`${API_URL}/students`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -86,7 +87,7 @@ const Attendance = () => {
     if (!newDate.trim()) return;
 
     // POST request to add a new date
-    fetch('http://localhost:8000/dates', {
+    fetch(`${API_URL}/dates`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ date: newDate }),

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import './lecture.css';
+import { API_URL } from '../config';
 
 interface Lectures {
   id: number
@@ -42,7 +43,7 @@ function Lecture() {
 
     async function fetchLectures() {
         try {
-          const response = await fetch('http://127.0.0.1:8000/lecture'); // Replace with your API endpoint
+          const response = await fetch(`${API_URL}/lecture`);
           if (!response.ok) {
             throw new Error(`Error: ${response.statusText}`);
           }
@@ -71,7 +72,7 @@ function Lecture() {
             }
         
             try {
-                const response = await fetch('http://127.0.0.1:8000/lecture/new', {
+                const response = await fetch(`${API_URL}/lecture/new`, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
@@ -103,7 +104,7 @@ function Lecture() {
     
     async function deleteLecture(id: number) {
         try {
-            await fetch(`http://127.0.0.1:8000/lecture/${id}`, {
+            await fetch(`${API_URL}/lecture/${id}`, {
                 method: "DELETE",
             });
             await fetchLectures();
@@ -113,7 +114,7 @@ function Lecture() {
     }
 
     async function editLecture(id: number){
-        await fetch(`http://127.0.0.1:8000/lecture/${id}`, {
+        await fetch(`${API_URL}/lecture/${id}`, {
             method: 'PUT',
             headers: {
               'Accept': 'application/json',

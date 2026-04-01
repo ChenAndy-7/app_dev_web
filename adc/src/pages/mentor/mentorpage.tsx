@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Mentor } from './interface'; // Assuming 'interface' is where your Mentor interface is defined.
+import { Mentor } from './interface';
 import './mentor.css';
+import { API_URL } from '../../config';
 
 interface Groups {
   id: number
@@ -71,7 +72,7 @@ const AddGroupForm: React.FC<AddGroupFormProps> = ({ onAddGroup, mentors }) => {
 
     try {
       const studentsString = students.join(",");
-      const response = await fetch("http://localhost:8000/groups/new", {
+      const response = await fetch(`${API_URL}/groups/new`, {
         method: "POST",
         headers: {
           'Accept': 'application/json',
@@ -234,7 +235,7 @@ const MentorPage: React.FC = () => {
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch("http://localhost:8000/groups");
+      const response = await fetch(`${API_URL}/groups`);
       if (!response.ok) {
         throw new Error("Failed to fetch groups");
       }
@@ -268,7 +269,7 @@ const MentorPage: React.FC = () => {
   const handleDeleteGroup = async (groupId: number) => {
     console.log("Deleting group with id:", groupId);
     try {
-      const response = await fetch(`http://localhost:8000/groups/${groupId}`, {
+      const response = await fetch(`${API_URL}/groups/${groupId}`, {
         method: "DELETE",
       });
 
